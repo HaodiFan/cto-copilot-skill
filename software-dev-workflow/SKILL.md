@@ -1,7 +1,7 @@
 ---
 name: software-dev-workflow
-description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、当前场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、项目脚手架、需求澄清、PRD/design doc、架构选型、目录结构、分支规范、AGENTS.md、开发计划、实现前检查、验证门禁、PR/release readiness、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。
-version: 0.2.0
+description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、当前场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、PR/release readiness、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。
+version: 0.3.0
 ---
 
 # 软件开发工作流
@@ -37,7 +37,7 @@ version: 0.2.0
 ### 0. 是接手已有项目吗？（最高优先级）
 
 - 信号：用户描述"接手"、"现有项目"、"老代码"、"刚加入团队"、给出已有 repo URL、问"这项目怎么继续"。
-- 行动：读取 `references/inheriting-projects.md`。
+- 行动：读取 `references/inheriting-projects.md`。先跑 §1.0 自动识别（机器可判断的工具链 / 形态推断），再走 §1.1–1.5 人工盘点。
 - 默认立场：**尊重现状，不擅自重构**。先盘点文档与代码现状，缺什么补什么。
 
 ### 1. 是实现/修 bug/迁移任务吗？
@@ -62,7 +62,7 @@ version: 0.2.0
 
 - 信号：用户从想法、空目录、新 repo、"怎么搭项目"开始。
 - 行动：读取 `references/project-blueprints.md`、`references/architecture-cases.md`（AI 项目再加 `architecture-cases-ai.md`）、`references/spec-templates.md`。
-- 规则：按 Stage 0–4 的真实 6 步顺序推进（见 `stage-playbook.md`）。
+- 规则：按 Stage 0–4 的真实 6 步顺序推进（见 `stage-playbook.md`）；脚手架阶段同时落地 `CONSTITUTION.md`、`docs/decisions/`、`docs/memory-bank/`、`docs/prompts/`（见 `memory-bank-guide.md` 与 `prompts-guide.md`）。
 
 ### 5. 是方法论或 Skill/文档建设吗？
 
@@ -113,7 +113,11 @@ AI/Agent 类项目额外读取 `references/architecture-cases-ai.md`。
 - spec/design doc 是意图真相源，代码是意图实现。
 - **业务需求文档必须由用户提供**，agent 只负责校验完备性、抽取结构、提问澄清，不替用户编造业务意图。
 - 没有 spec，不新增架构层、状态机、存储、权限、全局依赖或公共 API。
-- 全局真相源必须唯一：architecture、development rules、design rules、folder declaration、terminology、changelog、branching。
+- 全局真相源必须唯一：architecture、development rules、design rules、folder declaration、terminology、changelog、branching、constitution。
+- **`CONSTITUTION.md` 是项目红线**：触线立刻停下、提示用户，不自行突破（详见 `spec-templates.md`）。
+- **架构决策走 ADR**：在 `docs/decisions/ADR-NNNN-*.md` 记录"为什么这么选"（详见 `spec-templates.md`）。
+- **Memory Bank 是 agent 跨会话上下文**（`docs/memory-bank/`）：开工先读 `active-context.md`，会话结束更新；详见 `memory-bank-guide.md`。
+- **Design doc 有生命周期**：`backlog/ → active/ → done/`，状态由目录位置体现，AGENTS 默认只读 `active/`。
 - 一个 topic 一个分支，避免混入无关变更。
 - 优先做最小 vertical slice（端到端闭环），不做大面积半成品。
 - 信息不足时，优先做可逆的最小假设并明确说明；只有错误假设代价高时才提问。
@@ -125,6 +129,8 @@ AI/Agent 类项目额外读取 `references/architecture-cases-ai.md`。
 - `references/project-blueprints.md`：5 种项目形态的 starter 目录结构与首次提交清单。
 - `references/architecture-cases.md`：通用架构选型 case 库（Repo / 渲染 / 后端 / 数据 / 部署 / 鉴权 / 异步 / 可观测性 / 客户端 / 状态管理 / 测试 / CI/CD / 配置 / i18n / 合规 / 性能等 19 大类）。
 - `references/architecture-cases-ai.md`：AI / Agent 专项架构选型 case 库（LLM 调用、Agent runtime、工具调用、记忆、RAG、向量库、Prompt 管理、评估、安全等）。
-- `references/spec-templates.md`：README、ARCHITECTURE、DEVELOPMENT、BRANCHING、DESIGN、AGENTS、design doc、layout spec、requirements doc、folder declaration、PR 模板。
+- `references/spec-templates.md`：README / ARCHITECTURE / DEVELOPMENT / BRANCHING / DESIGN / AGENTS / **CONSTITUTION（红线）** / **ADR（决策记录）** / Requirements / Design Doc（含 backlog/active/done lifecycle）/ Layout Spec / Folder Declaration / PR 模板。
 - `references/checklists.md`：验证门禁、需求完备性、PR readiness、反模式和场景 checklist。
-- `references/inheriting-projects.md`：接手已有项目的盘点流程、现状报告模板、文档补齐顺序。
+- `references/inheriting-projects.md`：接手已有项目的盘点流程（含 §1.0 自动识别）、现状报告模板、文档补齐顺序。
+- `references/memory-bank-guide.md`：AI agent 跨会话上下文的"指针 + 增量"模式（brief / tech-context / patterns / active-context）。
+- `references/prompts-guide.md`：可复用 prompt 模板（scaffold / handover-audit / new-feature / new-design-doc / new-adr / pre-pr / update-active-context / refactor-safely / debug-incident）。

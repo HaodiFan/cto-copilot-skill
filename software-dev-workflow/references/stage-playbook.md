@@ -2,7 +2,9 @@
 
 用于诊断当前软件开发阶段，并决定下一步动作。
 
-阶段 I（接手盘点）见 `inheriting-projects.md`。本文件覆盖 Stage 0–9。
+阶段 I（接手盘点）见 `inheriting-projects.md`（含 §1.0 自动识别 + §1.1–1.5 人工盘点）。本文件覆盖 Stage 0–9。
+
+> 跨阶段产物索引：`CONSTITUTION.md`（Stage 3 起草、长期维护）；ADR `docs/decisions/ADR-NNNN-*.md`（Stage 3 起步、每个关键决策）；Memory Bank `docs/memory-bank/`（Stage 4 初始化、Stage 6/8 持续更新）；Prompts `docs/prompts/`（Stage 4 初始化）；Design doc lifecycle `docs/design/{backlog,active,done}/`（Stage 4 建立、Stage 5–8 流转）。详见 `spec-templates.md`、`memory-bank-guide.md`、`prompts-guide.md`。
 
 ---
 
@@ -99,18 +101,20 @@ P0 不做 <non-goal>。
    - i18n、合规、性能扩展性
 3. **真相源声明**：每个领域唯一 owning layer。外部平台默认是 integration，不是真相源，除非文档明确说明。
 4. **分支规范前置**：在脚手架之前，先定 `BRANCHING.md`（见 `spec-templates.md`）。这是 trunk-based / git-flow / GitHub flow 的明确选择，不留模糊。
-5. **更新 `ARCHITECTURE.md`** 或等价全局真相源，记录所有决策与代价。
+5. **红线声明**：起草 `CONSTITUTION.md` v0.1（见 `spec-templates.md`），把"绝不能违反"的规则明文化（鉴权边界、真相源、runtime data、AI 调用统一 client 等）。**只放红线，不放偏好**。
+6. **关键决策走 ADR**：每个有后果、未来要回溯的决策（选库、选数据库、选 LLM provider 调用模式、选 monorepo vs polyrepo），写一份 `docs/decisions/ADR-NNNN-*.md`（见 `spec-templates.md`）。决策结论同步进 `ARCHITECTURE.md` Technical Baseline。
+7. **更新 `ARCHITECTURE.md`** 或等价全局真相源，记录所有决策与代价，并交叉引用 ADR。
 
 规则：
 
 - router/controller 只做协议适配，不承载核心领域逻辑。
 - runtime data 放 repo 外。
-- 每个架构决策必须写明：选了什么、为什么、付出什么代价、退出成本多高。
+- 每个架构决策必须写明：选了什么、为什么、付出什么代价、退出成本多高。**详细 trade-off 写 ADR，结论写 ARCHITECTURE.md**。
 
 停止条件：
 
 - 每个主要职责都有唯一 owning layer 或目录。
-- `ARCHITECTURE.md` + `BRANCHING.md` 可独立解释整套技术决策。
+- `ARCHITECTURE.md` + `BRANCHING.md` + `CONSTITUTION.md` + 关键 ADR 可独立解释整套技术决策。
 
 ---
 
@@ -125,10 +129,12 @@ P0 不做 <non-goal>。
 
 1. **初始化项目文件夹体系**（按 `project-blueprints.md` 的 starter tree）。
 2. **落地分支规范**：`BRANCHING.md` 必须在第一个非 README commit 之前生效。
-3. **落地架构文档**：`ARCHITECTURE.md` 反映 Stage 3 全部决策。
-4. **业务目标对齐**：把用户提供的需求文档归档到 `docs/requirements/`，并交叉引用 design doc。
+3. **落地架构 + 红线 + 关键 ADR**：`ARCHITECTURE.md` 反映 Stage 3 全部决策；`CONSTITUTION.md` v0.1 落地（红线）；起步 ADR（至少 `ADR-0001` 宣告用 ADR 记录决策）。
+4. **业务目标对齐**：把用户提供的需求文档归档到 `docs/requirements/`，并交叉引用 design doc。建立 `docs/design/{backlog,active,done}/` 三个生命周期目录，把 bootstrap design doc 放到 `active/`。
 5. **页面布局先行**（UI 类项目）：根据需求文档 + `DESIGN.md` 写 layout spec（md 形式，见 `spec-templates.md`），**先于代码与 Figma**。
 6. **组件选择**：对照 `DESIGN.md` 的组件清单与交互模式选定每个区域用什么组件。新组件必须先进 `DESIGN.md`。
+7. **AI 协作骨架（agent 协作项目）**：初始化 `docs/memory-bank/` 四件套（`brief.md` / `tech-context.md` / `patterns.md` / `active-context.md`，见 `memory-bank-guide.md`）；`docs/prompts/` 至少落地基线 `scaffold-new-project` / `pre-pr` / `update-active-context`（见 `prompts-guide.md`）。
+8. **AGENTS.md 更新**：明示 agent 开工先读 `memory-bank/active-context.md` + `CONSTITUTION.md`，会话末更新 `active-context.md`。
 
 首次提交规则：
 
@@ -138,7 +144,9 @@ P0 不做 <non-goal>。
 停止条件：
 
 - 新成员可以 clone、install、run，并找到下一份 design doc。
-- `BRANCHING.md`、`ARCHITECTURE.md`、`DESIGN.md`（UI 类）、`AGENTS.md` 全部存在。
+- `BRANCHING.md`、`ARCHITECTURE.md`、`CONSTITUTION.md`、`DESIGN.md`（UI 类）、`AGENTS.md` 全部存在。
+- agent 协作项目：`docs/memory-bank/` 四件套与 `docs/prompts/README.md` 已就位。
+- `docs/decisions/ADR-0001-*.md` 存在，作为后续 ADR 编号锚点。
 
 ---
 
@@ -179,10 +187,11 @@ Milestone 4: tests and docs
 下一步：
 
 - 编辑前先检查 repo。
-- 读取 canonical docs 和现有实现模式。
+- 读取 canonical docs（含 `CONSTITUTION.md`、`docs/memory-bank/active-context.md`、`docs/memory-bank/patterns.md`）和现有实现模式。
 - 实现最小 vertical slice。
-- 保持在已声明架构边界内。
+- 保持在已声明架构边界内 + 不触 `CONSTITUTION.md` 红线。
 - 如需偏离 spec，先更新 spec。
+- 触发红线 → 立刻停下，提示用户三种路径（改方案规避 / 提议放宽红线 / 申请临时豁免），由 owner 决策。
 
 收尾必须包含：
 
@@ -190,10 +199,12 @@ Milestone 4: tests and docs
 - 已运行验证
 - 未运行检查及原因
 - 剩余风险
+- **更新 `docs/memory-bank/active-context.md`**（agent 协作项目）：写已完成 / 进行中 / 下一步 / 给下一会话留言。
 
 停止条件：
 
 - 代码已实现，并至少完成最小验证，或明确说明验证被什么阻塞。
+- `active-context.md` 已更新（agent 协作项目）。
 
 ---
 
@@ -224,9 +235,13 @@ Milestone 4: tests and docs
 
 下一步：
 
-- 确保 design doc 已关联。
+- 确保 design doc 已关联（位于 `docs/design/active/`）。
 - 重要变更已更新 docs/changelog。
 - `git diff --check` 通过。
+- `CONSTITUTION.md` 红线 0 触发（或已走豁免流程）。
+- 触发架构维度变更 → 同步 `docs/decisions/` 增加或更新 ADR。
+- feature 完成 → 把 design doc 从 `active/` 移到 `done/`，回填 `Validation Results`。
+- 更新 `docs/memory-bank/active-context.md`（agent 协作项目）：标 PR 状态。
 - 总结 why、what、risk、validation。
 
 PR body：
@@ -256,9 +271,12 @@ PR body：
 
 - 区分行为保持型 refactor 和功能变更。
 - 移动代码前先识别或补充测试。
-- 若边界变化，更新 folder declaration 或 architecture docs。
+- 若边界变化，更新 folder declaration 或 architecture docs；架构方向调整需补 ADR。
+- 重构不得绕开 `CONSTITUTION.md` 红线（不能借"清理"之名移除 audit、绕鉴权、合并 truth source 等）。
+- 重构发现"项目特定写法"或"已多次踩的坑" → 沉淀到 `docs/memory-bank/patterns.md`（见 `memory-bank-guide.md`）。
 - 没有目标架构文档时，避免大范围重写。
 
 停止条件：
 
 - 行为保持，边界更清晰，并有验证证明 touched slice 没有回归。
+- 涉及边界 / 架构 / 红线变化时，对应 ADR / ARCHITECTURE / CONSTITUTION 已更新。

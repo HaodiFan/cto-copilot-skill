@@ -27,6 +27,110 @@
 
 ## 1. 盘点 Checklist（按顺序过）
 
+### 1.0 自动识别（先跑一遍机器可判断的，再走人工盘点）
+
+> 目的：在动手读代码前，**用文件信号**快速生成第一版"项目类型 + 工具链"推断，节省后续盘点时间。Agent 应当能在 1–2 分钟内输出本节结果。
+
+**项目语言/运行时识别**：
+
+| 信号文件 | 推断 |
+|---|---|
+| `package.json` + `pnpm-workspace.yaml` | Node.js monorepo，pnpm |
+| `package.json` + `lerna.json` / `nx.json` / `turbo.json` | Node.js monorepo（Lerna / Nx / Turborepo） |
+| `package.json` 单一 + `next.config.*` | Next.js Web 项目 |
+| `package.json` + `vite.config.*` | Vite 前端 |
+| `package.json` + `tauri.conf.json` | Tauri 桌面端 |
+| `package.json` + `electron-builder.yml` | Electron 桌面端 |
+| `pyproject.toml` + `[tool.poetry]` | Python（Poetry） |
+| `pyproject.toml` + `[tool.uv]` 或 `uv.lock` | Python（uv） |
+| `requirements.txt` 无 `pyproject.toml` | Python（pip 旧式） |
+| `Cargo.toml` | Rust |
+| `go.mod` | Go |
+| `pom.xml` / `build.gradle*` | Java/Kotlin |
+| 多语言混合 | Polyglot monorepo（标记 hybrid） |
+
+**项目形态推断**：
+
+| 信号 | 推断形态 |
+|---|---|
+| 有 `apps/desktop` + Tauri/Electron 配置 | Desktop + Local Agent（候选） |
+| 有 `apps/web` + 后端服务目录（`services/` / `backend/` / `api/`） | Web + Backend |
+| 仅 `src/` + `cli/` 子目录 + `pyproject.toml` 有 entry point | Python Agent / CLI |
+| 有 `package.json` 的 `"main"` / `"exports"` + `examples/` + 无运行入口 | Library / SDK |
+| 多 app + `packages/` + workspace 配置 | Full-stack Monorepo |
+| 信号冲突或不足 | Unknown（继续走 §1.1–1.5） |
+
+**框架/工具栈识别**：
+
+| 维度 | 信号文件 |
+|---|---|
+| 前端框架 | `next.config.*` / `nuxt.config.*` / `vite.config.*` / `angular.json` / `svelte.config.*` |
+| UI 库 | `tailwind.config.*` / `theme.ts` / 包依赖里的 `@mui/*` `antd` `chakra-ui` `shadcn` |
+| 后端框架 | 依赖 `fastapi` `flask` `django` `express` `nestjs` `gin` `actix-web` `spring-boot` |
+| ORM / DB | 依赖 `sqlalchemy` `prisma` `drizzle` `typeorm` `mongoose` |
+| Migration | `alembic/` / `prisma/migrations/` / `migrations/` |
+| 测试框架 | `pytest.ini` / `jest.config.*` / `vitest.config.*` / `playwright.config.*` |
+| Lint / Format | `.eslintrc*` / `ruff.toml` / `.prettierrc*` / `biome.json` |
+| CI 平台 | `.github/workflows/` / `.gitlab-ci.yml` / `.circleci/` / `Jenkinsfile` |
+| 容器化 | `Dockerfile` / `docker-compose.*` / `Containerfile` |
+| 部署 | `vercel.json` / `netlify.toml` / `railway.toml` / `fly.toml` / `serverless.yml` / `wrangler.toml` |
+| Monorepo 工具 | `pnpm-workspace.yaml` / `nx.json` / `turbo.json` / `lerna.json` / `rush.json` |
+| 包管理器锁 | `pnpm-lock.yaml` / `package-lock.json` / `yarn.lock` / `uv.lock` / `poetry.lock` / `Cargo.lock` / `go.sum` |
+
+**AI / Agent 痕迹（加分项）**：
+
+| 信号 | 推断 |
+|---|---|
+| `prompts/` 顶层目录 / `**/*.prompt.md` | 有 prompt 管理 |
+| `agent/` / `agents/` / `skills/` 顶层 | Agent runtime |
+| 依赖 `langchain` `langgraph` `llamaindex` `openai` `anthropic` `litellm` | LLM SDK |
+| 依赖 `chromadb` `qdrant-client` `pinecone-client` `weaviate-client` | 向量库 |
+| `langfuse` / `langsmith` / `helicone` | LLM 可观测性 |
+| `evals/` / `eval/` + `*.eval.*` | 有 eval 体系 |
+
+**git 历史快速画像（在 repo 内跑）**：
+
+```bash
+# 项目活跃度
+git log --since="6 months ago" --oneline | wc -l           # 近 6 个月 commit 数
+git log --since="6 months ago" --format="%an" | sort -u    # 近 6 个月作者
+git log --format="%H" | wc -l                              # 总 commit 数
+git log -1 --format="%ai"                                  # 最后一次提交时间
+
+# 分支策略推断
+git branch -a                                              # 长期分支
+git log --all --oneline --merges -20                       # 近期 merge 风格
+git log --format="%s" -50                                  # commit message 风格（conventional? "fix"满天飞?）
+```
+
+**自动识别输出格式**：
+
+```text
+## 自动识别报告（机器推断，待人工确认）
+
+- 主要语言/运行时: <Node.js 18+ / Python 3.11 / 多语言>
+- 包管理器: <pnpm / npm / uv / poetry / cargo>
+- 项目形态推断: <Web+Backend / Desktop+Local Agent / ...> （置信度: <高 | 中 | 低>）
+- Repo 组织: <单 repo / monorepo（pnpm workspaces）/ polyglot monorepo>
+- 前端栈: <Next.js / Vite + React / 无前端>
+- 后端栈: <FastAPI / Express / 无独立后端>
+- 数据层: <Postgres + SQLAlchemy + Alembic / 无 / 不明>
+- CI: <GitHub Actions / 不存在>
+- 部署: <Vercel / Docker + 自托管 / 不明>
+- AI/Agent 痕迹: <无 / langchain + Pinecone / 自研 agent runtime>
+- 活跃度: <近 6 个月 N commits / M 名作者 / 最后提交 X 天前>
+- 分支模型推断: <trunk-based / git-flow / 仅 main / 不明>
+- Commit 风格: <conventional / 自由式 / 混合>
+
+需要人工确认的疑点:
+- <例：发现 prompts/ 但没有 LLM 依赖，可能是文档目录而非真 prompt 管理>
+- <例：有 Dockerfile 但 CI 不构建镜像，可能未使用>
+```
+
+> §1.0 完成后，§1.1–1.5 的人工盘点可以**只关注机器看不到的**：业务真相源、真实分支用法、code review 严格度、暗坑等。
+
+---
+
 ### 1.1 文档结构盘点
 
 逐项标记 `存在 / 缺失 / 过期`：
@@ -222,12 +326,16 @@
 2. `ARCHITECTURE.md`：当前架构事实 + 真相源 + 主要边界。as-is 优先。
 3. `BRANCHING.md`：从 git log 反推现状，不发明新规则；新规则需团队同意。
 4. `AGENTS.md`：AI 协作硬约束（先读哪些文档、不能动什么）。
-5. `DEVELOPMENT.md`：怎么本地跑 + 怎么测试 + 怎么提交 + DoD。
-6. `docs/governance/folder-declaration-v0.md`：顶层目录职责。
-7. `docs/governance/changelog.md`：从今天起记。
-8. `DESIGN.md`（UI 类）：抽取现有组件 + token 现状。
-9. `docs/requirements/`：找业务负责人补一份当前 baseline 需求。
-10. `docs/design/`：之后每个新 feature 一份 design doc。
+5. `CONSTITUTION.md`：把现状中**已存在的红线**明文化（如"不能直连 prod 库"、"prompt 必须从文件加载"），不发明新红线。
+6. `DEVELOPMENT.md`：怎么本地跑 + 怎么测试 + 怎么提交 + DoD。
+7. `docs/governance/folder-declaration-v0.md`：顶层目录职责（基于 §1.0 自动识别 + §1.2 人工确认）。
+8. `docs/governance/changelog.md`：从今天起记。
+9. `docs/decisions/ADR-0001-record-architecture-decisions.md`：宣告"从今天起新决策走 ADR"，并补 1–2 份回溯式 ADR 记录现状中"未来要回溯"的关键决策。
+10. `docs/memory-bank/`（agent 协作项目）：把 §1.0 自动识别 + §2 现状报告整理成 `brief.md` / `tech-context.md`；`patterns.md` 留待逐步提炼；`active-context.md` 写"刚接手，下一步：X"。
+11. `docs/prompts/`（agent 协作项目）：从基线模板挑 `handover-audit` / `pre-pr` / `update-active-context` 起步。
+12. `DESIGN.md`（UI 类）：抽取现有组件 + token 现状。
+13. `docs/requirements/`：找业务负责人补一份当前 baseline 需求。
+14. `docs/design/active/`、`backlog/`、`done/`：建立 design doc lifecycle 目录；之后每个新 feature 一份 design doc。
 
 ---
 
@@ -286,7 +394,8 @@
 ## 8. 与其他 references 的关系
 
 - 现状报告显示项目处于 **正常开发阶段** → 接回 `stage-playbook.md` 对应阶段。
-- 现状报告显示需要**补关键架构决策** → 用 `architecture-cases.md` 校准 as-is，不强制改。
+- 现状报告显示需要**补关键架构决策** → 用 `architecture-cases.md` 校准 as-is，不强制改；关键回溯决策落到 `docs/decisions/` ADR。
 - 现状报告显示**文档缺失** → 用 `spec-templates.md` 模板补，但内容必须反映现状。
 - 现状报告显示**需要 PR/发布** → 用 `checklists.md` 的 PR Readiness。
+- 现状报告显示团队**会用 AI agent 协作** → 用 `memory-bank-guide.md` 与 `prompts-guide.md` 初始化 `docs/memory-bank/` 与 `docs/prompts/`。
 - 接手 AI 项目 → 额外用 `architecture-cases-ai.md` 校准 AI 维度现状。

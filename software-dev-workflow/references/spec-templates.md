@@ -11,17 +11,32 @@ DEVELOPMENT.md                         # 开发规则
 BRANCHING.md                           # 分支与提交规范（独立产物）
 DESIGN.md                              # 设计系统真相源（UI 类项目必备）
 AGENTS.md                              # AI agent 项目级约束
+CONSTITUTION.md                        # 项目红线（不可妥协规则）
 docs/
 ├── requirements/
 │   └── requirements-v0.0.1.md         # 用户提供的需求文档
 ├── design/
-│   ├── design_doc-v0.0.1-bootstrap.md
+│   ├── active/                        # 当前在做的 design doc
+│   │   └── design_doc-v0.0.1-bootstrap.md
+│   ├── backlog/                       # 已起草但未启动
+│   ├── done/                          # 已完成并归档
 │   └── layout-spec-<page>.md          # 页面布局 md（UI 类项目）
+├── decisions/                         # ADR（架构决策记录）
+│   └── ADR-0001-record-architecture-decisions.md
+├── memory-bank/                       # AI agent 跨会话上下文（指针 + 增量）
+│   ├── brief.md
+│   ├── tech-context.md
+│   ├── patterns.md
+│   └── active-context.md
+├── prompts/                           # 可复用 prompt 模板
+│   └── README.md
 └── governance/
     ├── folder-declaration-v0.md
     ├── terminology-glossary.md
     └── changelog.md
 ```
+
+> Memory Bank 详见 `memory-bank-guide.md`；prompts 详见 `prompts-guide.md`。
 
 ---
 
@@ -39,11 +54,13 @@ docs/
 ## Start Here
 
 - [Architecture](./ARCHITECTURE.md)
+- [Constitution](./CONSTITUTION.md)
 - [Development Rules](./DEVELOPMENT.md)
 - [Branching](./BRANCHING.md)
 - [Design System](./DESIGN.md)
 - [Requirements](./docs/requirements/)
-- [Design Docs](./docs/design/)
+- [Design Docs](./docs/design/) · [Decisions (ADR)](./docs/decisions/)
+- [Memory Bank](./docs/memory-bank/) · [Prompts](./docs/prompts/)
 - [Folder Declaration](./docs/governance/folder-declaration-v0.md)
 - [Changelog](./docs/governance/changelog.md)
 
@@ -372,14 +389,174 @@ Conventional Commits：`<type>(<scope>): <subject>`
 ```md
 # Agent Rules
 
-- 大改前先读 `README.md`、`ARCHITECTURE.md`、`DEVELOPMENT.md`、`BRANCHING.md`。
+- 大改前先读 `README.md`、`ARCHITECTURE.md`、`DEVELOPMENT.md`、`BRANCHING.md`、`CONSTITUTION.md`。
+- 进入项目先读 `docs/memory-bank/active-context.md` + `docs/memory-bank/patterns.md`。
 - UI 任务还必须读 `DESIGN.md` 与对应 layout spec。
-- 每个正式任务必须关联 `docs/design/*` 与 `docs/requirements/*`。
+- 每个正式任务必须关联 `docs/design/active/*` 与 `docs/requirements/*`。
 - 业务需求由用户提供，agent 不编造业务意图。
 - 没有 spec，不新增架构层、状态机、存储、权限、全局依赖或公共 API。
 - 如果实现必须偏离 spec，先更新 spec，再改代码。
+- 触动 `CONSTITUTION.md` 红线的改动 → 立刻停下，提示用户而非自行突破。
+- 会话结束更新 `docs/memory-bank/active-context.md`。
 - 收尾必须说明变更文件、已运行验证、剩余风险。
 ```
+
+---
+
+## CONSTITUTION.md
+
+> **项目红线**——不可妥协的规则。代码、PR、agent 行为如果触线，**直接拒绝**，不讨论。
+>
+> Constitution **只放红线**。一般技术品味、风格偏好放 `DEVELOPMENT.md` 或 lint 配置。判断标准：违反这条会导致**安全问题、数据丢失、合规违反、架构腐烂或无法回滚**——才是红线。
+
+```md
+# Project Constitution
+
+- Status: active
+- Last updated: <date>
+- Owner: <tech lead / team>
+
+> 红线规则。修改本文件 = 修改项目契约，需团队共识 + PR review。
+
+## 0. 修改本文件的规则
+
+- 新增/修改条款必须开 PR，至少 2 名维护者批准。
+- 删除条款必须写明原因，并入 changelog。
+- 临时豁免必须有明确截止时间和 owner。
+
+## 1. 安全与合规
+
+- [必须] 任何 secret 不入 repo（连 `.env.example` 也不能放真值）。
+- [必须] 用户数据访问必须有审计日志。
+- [禁止] 在日志/异常/前端 console 打印 PII / 凭证 / token。
+- [禁止] 绕过鉴权层直连数据库或外部数据源。
+
+## 2. 架构边界
+
+- [必须] router/controller 只做协议适配，不承载领域逻辑。
+- [必须] 全局真相源唯一：`ARCHITECTURE.md` / `BRANCHING.md` / `DESIGN.md` / `folder-declaration-v0.md`。
+- [禁止] 跳过 service/repository 层，从 UI 直连存储。
+- [禁止] 在 `packages/protocol`（或等价契约层）写业务逻辑。
+
+## 3. 数据与状态
+
+- [必须] runtime data（output / logs / uploads / runtime）放 repo 外。
+- [必须] schema 变更走 migration，不直接改库。
+- [禁止] 把外部平台当产品真相源，除非 ARCHITECTURE.md 明确声明。
+
+## 4. 代码与变更
+
+- [必须] 一个分支一个意图（feature / fix / refactor / docs，不混合）。
+- [必须] 涉及架构 / 状态机 / 存储 / 权限 / 公共 API / UI 模式的改动，先更新 spec 再写代码。
+- [必须] PR 关联 design doc 与 requirements doc（hotfix 例外，需补 post-mortem）。
+- [禁止] 直接 push 到 protected 分支（main / uat / dev）。
+- [禁止] 提交未验证的 AI 生成代码。
+
+## 5. UI（UI 类项目）
+
+- [必须] 新组件先入 `DESIGN.md` 再写代码。
+- [必须] 所有交互状态（loading / empty / error / success）按 `DESIGN.md` 模式实现。
+- [禁止] 局部发明设计 token 或组件样式，绕过 design system。
+
+## 6. AI / Agent（AI 类项目）
+
+- [必须] LLM 调用走统一 client，禁止直连 SDK。
+- [必须] prompt 从 `prompts/` 加载，不内联硬编码。
+- [必须] 所有 LLM 调用有 trace（provider / model / cost / latency / token）。
+- [禁止] 把模型/provider 名硬编码到业务逻辑里（必须可配置）。
+- [禁止] 没有 eval baseline 就上生产。
+
+## 7. 可观测性
+
+- [必须] 关键路径有结构化日志（含 request_id / user_id / latency）。
+- [必须] 错误必须上报到错误追踪系统。
+- [禁止] 用 `print` / `console.log` 作为生产日志。
+
+## 8. 红线触发处理
+
+agent / 开发者发现自己的改动**会**触线时：
+
+1. 立即停下，不要"绕路实现"。
+2. 在 PR / 对话中明示"触发红线 §X.Y"。
+3. 给出三种路径：(a) 改方案规避，(b) 提议放宽该红线（走修改本文件流程），(c) 申请临时豁免。
+4. 由 owner 决策。
+
+## 9. 红线之外的规范
+
+- 代码风格 / 命名 / 文件组织 / 一般最佳实践 → 见 `DEVELOPMENT.md` 与 lint/format 配置。
+- 项目特有写法（"我们这里习惯怎么做"）→ 见 `docs/memory-bank/patterns.md`。
+```
+
+---
+
+## ADR（架构决策记录）
+
+> 路径：`docs/decisions/ADR-<NNNN>-<kebab-title>.md`，编号连续。
+>
+> 何时写 ADR：选了某个**有后果、未来要回溯**的技术方向（选库、改边界、引入新模式、放弃某条路）。决策本身写在 ARCHITECTURE.md，**为什么这么选**写在 ADR。
+
+第一份 ADR 建议是 `ADR-0001-record-architecture-decisions.md`，宣布"本项目用 ADR 记录架构决策"。
+
+```md
+# ADR-<NNNN>: <一句话决策标题>
+
+- Status: <proposed | accepted | superseded by ADR-MMMM | deprecated>
+- Date: <YYYY-MM-DD>
+- Deciders: <names / roles>
+- Linked Design Doc: <docs/design/active/...>
+- Linked ARCHITECTURE 行: <Technical Baseline 中的对应维度>
+
+## Context（上下文）
+
+<决策时面临什么问题？什么约束？什么不能改？>
+
+## Options Considered（候选方案）
+
+### 选项 A：<方案名>
+- 优点：
+- 缺点：
+- 代价：
+- 退出成本：
+
+### 选项 B：<方案名>
+- 优点：
+- 缺点：
+- 代价：
+- 退出成本：
+
+### 选项 C：<方案名>（如有）
+- ...
+
+## Decision（决策）
+
+选择 **<方案 X>**。
+
+## Rationale（理由）
+
+<为什么是 X，不是 A/B/C？关键 trade-off 是什么？>
+
+## Consequences（后果）
+
+正面：
+- <例：未来 6 个月内不会撞到性能墙>
+
+负面：
+- <例：团队需要学习 X 框架，初期 velocity 下降>
+
+中性：
+- <例：从此 X 维度不可在不更新本 ADR 的情况下变更>
+
+## Validation（如何验证决策正确）
+
+- <例：3 个月后重看：QPS 是否达到 P0 指标？>
+- <例：上线 1 个月内若错误率 > 0.5%，触发 ADR 重审>
+
+## References
+
+- <相关链接、benchmark、社区讨论>
+```
+
+> 标记 `Status: superseded by ADR-MMMM`，保留旧文件，不删除。这是历史。
 
 ---
 
@@ -445,14 +622,34 @@ Conventional Commits：`<type>(<scope>): <subject>`
 
 ## Design Doc
 
+> **生命周期**：design doc 有明确状态，并通过目录位置体现：
+>
+> | Status | 含义 | 文件位置 |
+> |---|---|---|
+> | `draft` | 起草中，未启动 | `docs/design/backlog/` |
+> | `active` | 当前在做 | `docs/design/active/` |
+> | `done` | 已完成、已上线 | `docs/design/done/` |
+> | `archived` | 放弃 / 被 superseded | `docs/design/done/`（文件名加 `-archived` 后缀） |
+> | `superseded by <slug>` | 被新 doc 替代 | 留在原位置，header 注明替代者 |
+>
+> **转换规则**：
+> - `draft → active`：用户/owner 决定开做，移动到 `active/`，写明 owner 与 milestone 起始日期。
+> - `active → done`：feature 上线 + 验证通过 + memory-bank 已更新 → 移动到 `done/`，加 `Completion date` 行。
+> - 不要原地改 status 不动文件：目录位置就是状态。
+>
+> **AGENTS.md 默认只读 `active/`**；查 backlog/done 需用户明确说"看一下 backlog / 历史"。
+
 ```md
 # Design Doc: <Topic> v0.0.1
 
-- Status: draft
+- Status: <draft | active | done | archived | superseded by <slug>>
 - Owner: <name or team>
 - Last updated: <date>
+- Started: <YYYY-MM-DD>（active 时填）
+- Completion date: <YYYY-MM-DD>（done 时填）
 - Linked Requirements: docs/requirements/...
 - Linked Layout: docs/design/layout-spec-<page>.md（UI 类）
+- Linked ADR(s): docs/decisions/ADR-NNNN-...（如有架构决策）
 
 ## Background
 
@@ -475,6 +672,10 @@ Conventional Commits：`<type>(<scope>): <subject>`
 ## Acceptance Criteria
 
 ## Open Questions
+
+## Validation Results（done 时回填）
+
+<上线后实际的验证情况：哪些 acceptance criteria 通过，哪些被调整，遗留风险>
 ```
 
 ---

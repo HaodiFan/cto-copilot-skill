@@ -2,6 +2,10 @@
 
 用于诊断当前软件开发阶段，并决定下一步动作。
 
+阶段 I（接手盘点）见 `inheriting-projects.md`。本文件覆盖 Stage 0–9。
+
+---
+
 ## Stage 0：想法
 
 典型信号：
@@ -12,8 +16,8 @@
 下一步：
 
 - 写一句话定义：用户、系统类型、核心能力、核心问题、P0 非目标。
-- 判断项目形态：Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、Monorepo。
-- 创建 `docs/design/design_doc-v0.0.1-bootstrap.md`。
+- 给出形态候选（不超过 3 种），并说明各自代价。**不要立刻拍板**。
+- 提示用户：业务需求文档需由用户提供，agent 仅协助结构化。
 
 产物格式：
 
@@ -25,33 +29,36 @@ P0 不做 <non-goal>。
 
 停止条件：
 
-- 已选定一个可逆的项目形态，并明确 P0 非目标。
+- 已选定一个可逆的项目形态候选范围，并明确 P0 非目标。
+
+---
 
 ## Stage 1：需求澄清
+
+> 关键约束：业务需求文档由**用户提供**，agent 不替编。
 
 典型信号：
 
 - 用户、权限、流程、数据来源、平台或成功标准不清楚。
-- 用户提供了零散材料，但没有结构化需求。
+- 用户提供了零散材料但没有结构化需求。
 
 下一步：
 
-- 抽取 actors、workflow、data objects、integrations、constraints、risks。
-- 区分 scope 和 non-scope。
-- 把未知点转成 open questions。
+- **请求用户提供需求文档**（参考 `spec-templates.md` 的 Requirements Doc 模板）。
+- 用户已给材料的，按模板抽取并回填，缺失项标 `TODO（用户补充）`。
+- 用 `checklists.md` 的「需求文档完备性 checklist」校验是否够开工。
+- 把未知点转成 open questions，按"agent 可推断 / 必须用户回答"分类。
 
 最小产物：
 
-- `Background`
-- `Goals`
-- `Scope`
-- `Non-goals`
-- `Assumptions`
-- `Open questions`
+- `Background`、`Goals`、`Scope`、`Non-goals`、`Assumptions`、`Open questions`、`Success metrics`
 
 停止条件：
 
+- 需求完备性 checklist 全通过，或缺口已被用户明确认可为"后置"。
 - 下一份 design doc 可以在不编造产品意图的前提下写出来。
+
+---
 
 ## Stage 2：Spec
 
@@ -65,51 +72,47 @@ P0 不做 <non-goal>。
 - 创建或更新一份聚焦的 design doc。
 - 必须包含验收标准和回滚点。
 - 不写"大而全总集"，除非用户明确要项目 baseline。
-
-最小 design doc：
-
-```md
-# Design Doc: <Topic> v0.0.1
-
-## Background
-## Goal
-## Scope
-## Non-goals
-## User Flow / System Flow
-## Architecture / Data Model / API / UI Changes
-## Milestones
-## Risks and Rollback
-## Acceptance Criteria
-## Open Questions
-```
+- UI 类 design doc 必须关联或先建 `DESIGN.md` 与 layout spec。
 
 停止条件：
 
 - 开发者能实现最小切片，不需要猜行为。
 
+---
+
 ## Stage 3：架构
+
+> 这是 Stage 0–4 真实顺序里最关键的一环。先选架构，再脚手架。
 
 典型信号：
 
 - 需要选择技术栈、repo 形态、runtime 边界、数据归属、模块边界或集成模式。
 - 用户问"怎么拆"、"放哪里"、"选什么结构"。
 
-下一步：
+下一步（建议顺序）：
 
-- 定义真相源：数据库、本地文件系统、外部平台或 package API。
-- 定义系统边界：frontend、backend、worker、local runtime、CLI、external services。
-- 明确 P0 不做什么。
-- 更新 `ARCHITECTURE.md` 或等价全局真相源。
+1. **形态决策**：用 `architecture-cases.md` 的 4 步法确定项目形态。
+2. **关键架构决策清单**：从 `architecture-cases.md` 的 19 大类 + `architecture-cases-ai.md`（AI 项目）逐项过：
+   - Repo 组织、渲染模式、前后端关系、后端架构、数据架构、通信协议
+   - 鉴权、部署、边缘/CDN、异步任务、可观测性
+   - 客户端形态、前端状态、测试策略、CI/CD、配置/密钥
+   - i18n、合规、性能扩展性
+3. **真相源声明**：每个领域唯一 owning layer。外部平台默认是 integration，不是真相源，除非文档明确说明。
+4. **分支规范前置**：在脚手架之前，先定 `BRANCHING.md`（见 `spec-templates.md`）。这是 trunk-based / git-flow / GitHub flow 的明确选择，不留模糊。
+5. **更新 `ARCHITECTURE.md`** 或等价全局真相源，记录所有决策与代价。
 
 规则：
 
-- 外部平台默认是 integration 或 replica，不是真相源，除非文档明确说明。
 - router/controller 只做协议适配，不承载核心领域逻辑。
 - runtime data 放 repo 外。
+- 每个架构决策必须写明：选了什么、为什么、付出什么代价、退出成本多高。
 
 停止条件：
 
 - 每个主要职责都有唯一 owning layer 或目录。
+- `ARCHITECTURE.md` + `BRANCHING.md` 可独立解释整套技术决策。
+
+---
 
 ## Stage 4：脚手架
 
@@ -118,11 +121,14 @@ P0 不做 <non-goal>。
 - 空 repo、新模块、首次提交。
 - 用户要求 starter structure 或 bootstrap plan。
 
-下一步：
+真实推进顺序（与一句话需求 → 上线之间最易出错的一段）：
 
-- 用 `project-blueprints.md` 选择 starter tree。
-- 先创建根级文档：`README.md`、`ARCHITECTURE.md`、`DEVELOPMENT.md`、`AGENTS.md`。
-- 添加 `.env.example`、config template、bootstrap script、folder declaration。
+1. **初始化项目文件夹体系**（按 `project-blueprints.md` 的 starter tree）。
+2. **落地分支规范**：`BRANCHING.md` 必须在第一个非 README commit 之前生效。
+3. **落地架构文档**：`ARCHITECTURE.md` 反映 Stage 3 全部决策。
+4. **业务目标对齐**：把用户提供的需求文档归档到 `docs/requirements/`，并交叉引用 design doc。
+5. **页面布局先行**（UI 类项目）：根据需求文档 + `DESIGN.md` 写 layout spec（md 形式，见 `spec-templates.md`），**先于代码与 Figma**。
+6. **组件选择**：对照 `DESIGN.md` 的组件清单与交互模式选定每个区域用什么组件。新组件必须先进 `DESIGN.md`。
 
 首次提交规则：
 
@@ -132,6 +138,9 @@ P0 不做 <non-goal>。
 停止条件：
 
 - 新成员可以 clone、install、run，并找到下一份 design doc。
+- `BRANCHING.md`、`ARCHITECTURE.md`、`DESIGN.md`（UI 类）、`AGENTS.md` 全部存在。
+
+---
 
 ## Stage 5：Feature 规划
 
@@ -159,6 +168,8 @@ Milestone 4: tests and docs
 
 - 每个 milestone 都有清晰 validation gate。
 
+---
+
 ## Stage 6：实现
 
 典型信号：
@@ -169,7 +180,7 @@ Milestone 4: tests and docs
 
 - 编辑前先检查 repo。
 - 读取 canonical docs 和现有实现模式。
-- 实现最小切片。
+- 实现最小 vertical slice。
 - 保持在已声明架构边界内。
 - 如需偏离 spec，先更新 spec。
 
@@ -183,6 +194,8 @@ Milestone 4: tests and docs
 停止条件：
 
 - 代码已实现，并至少完成最小验证，或明确说明验证被什么阻塞。
+
+---
 
 ## Stage 7：验证
 
@@ -200,6 +213,8 @@ Milestone 4: tests and docs
 停止条件：
 
 - 风险列表已关闭，或清楚记录在 PR/文档里。
+
+---
 
 ## Stage 8：PR / 发布
 
@@ -228,6 +243,8 @@ PR body：
 停止条件：
 
 - Reviewer 不需要重建上下文，就能理解意图、行为变化和风险。
+
+---
 
 ## Stage 9：维护 / 重构
 

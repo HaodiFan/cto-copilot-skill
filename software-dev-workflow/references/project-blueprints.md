@@ -1,8 +1,14 @@
 # 项目形态 Starter Blueprints
 
-用于新建项目、选择 repo 形态、或编写 folder declaration。
+用于新建项目（Stage 4 脚手架）落地目录结构与首次提交清单。
 
-## 形态决策表
+> **关系说明**：
+> - 形态决策与判断流程见 `architecture-cases.md` §0。
+> - 19 大类通用架构决策见 `architecture-cases.md`。
+> - AI 项目额外的 11 大类架构决策见 `architecture-cases-ai.md`。
+> - 本文件**只管 starter 目录结构与首次提交清单**，不重复架构决策内容。
+
+## 形态速查（详细决策见 architecture-cases.md §0）
 
 | 项目特征 | 推荐形态 |
 |---|---|
@@ -12,12 +18,7 @@
 | 可复用 API package、公共类型、示例、兼容性承诺 | Library / SDK |
 | 多 app、共享协议、共享 UI、长期平台化演进 | Full-stack Monorepo |
 
-判断顺序：
-
-1. 用户在哪里运行它？
-2. 产品真相源在哪里？
-3. 是否需要跨 app 共享代码？
-4. 是否需要本地 runtime 或进程编排？
+> 形态判断为 Unknown 时**不要**选 starter，先到 `architecture-cases.md` §0 完成 4 步判断。
 
 ## 所有形态共享的根级文件
 
@@ -25,16 +26,21 @@
 
 ```text
 README.md                    # 项目定位、Start Here、本地启动
-ARCHITECTURE.md              # 架构结论、边界、技术选型、P0 非目标
-DEVELOPMENT.md               # spec-driven、分支、PR、测试、完成定义
+ARCHITECTURE.md              # 架构结论、边界、技术选型、P0 非目标（含 Technical Baseline 决策表）
+DEVELOPMENT.md               # spec-driven、测试、完成定义（分支规范引用 BRANCHING.md）
+BRANCHING.md                 # 分支与提交规范（独立真相源，Stage 3 落地）
+DESIGN.md                    # 设计系统真相源（UI 类项目必备）
 AGENTS.md                    # 给 AI agent 的项目级约束
 LICENSE
-.gitignore
+.gitignore                   # 必须 ignore 运行时目录（output/ runtime/ logs/ 等）
 .editorconfig
 .env.example                 # 环境变量模板，禁止提交真实 secret
 docs/
+├── requirements/
+│   └── requirements-v0.0.1.md   # 用户提供的业务需求文档
 ├── design/
-│   └── design_doc-v0.0.1-bootstrap.md
+│   ├── design_doc-v0.0.1-bootstrap.md
+│   └── layout-spec-<page>.md    # 页面布局 md（UI 类项目）
 └── governance/
     ├── folder-declaration-v0.md
     ├── terminology-glossary.md
@@ -44,6 +50,8 @@ configs/
 scripts/
 └── bootstrap_dev_env.sh
 ```
+
+> Stage 4 完成判定见 `checklists.md` 的「新项目 Checklist」。
 
 ## Web + Backend
 

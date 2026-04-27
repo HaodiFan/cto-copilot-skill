@@ -101,37 +101,59 @@ npm run build
 
 ## 新项目 Checklist（Stage 4 完成判定）
 
+### 必备（任何项目）
+
 - [ ] 已写项目一句话定义。
 - [ ] 已选择项目形态。
 - [ ] `README.md` 存在。
-- [ ] `ARCHITECTURE.md` 存在，记录所有关键架构决策。
+- [ ] `ARCHITECTURE.md` 存在，记录所有关键架构决策（交叉引用 ADR）。
 - [ ] `DEVELOPMENT.md` 存在。
 - [ ] `BRANCHING.md` 存在并已生效（团队已知）。
-- [ ] `DESIGN.md` 存在（UI 类项目必备）。
-- [ ] `AGENTS.md` 存在。
+- [ ] `CONSTITUTION.md` 存在（红线 v0.1）。
+- [ ] `AGENTS.md` 存在（明示先读 active-context + Constitution）。
 - [ ] `docs/requirements/requirements-v0.0.1.md` 存在（来自用户）。
-- [ ] `docs/design/design_doc-v0.0.1-bootstrap.md` 存在。
-- [ ] `docs/design/layout-spec-<page>.md` 存在（UI 类项目首页或核心页）。
+- [ ] `docs/design/active/design_doc-v0.0.1-bootstrap.md` 存在；`backlog/` 与 `done/` 目录已建立（可空）。
+- [ ] `docs/decisions/ADR-0001-record-architecture-decisions.md` 存在。
 - [ ] `docs/governance/folder-declaration-v0.md` 存在。
 - [ ] `docs/governance/changelog.md` 存在。
 - [ ] `.env.example` 存在，真实 secret 已 ignore。
 - [ ] bootstrap script 存在。
 - [ ] 最小 app/service/CLI 可以运行。
 
+### UI 类项目额外
+
+- [ ] `DESIGN.md` 存在（design tokens + 组件清单 + 交互模式）。
+- [ ] `docs/design/layout-spec-<page>.md` 存在（首页或核心页）。
+
+### Agent 协作项目额外
+
+- [ ] `docs/memory-bank/brief.md` / `tech-context.md` / `patterns.md` / `active-context.md` 四件套存在（参考 `memory-bank-guide.md`）。
+- [ ] `docs/prompts/README.md` 存在，至少含基线 prompt（参考 `prompts-guide.md`）。
+
+### AI / LLM 项目额外
+
+- [ ] LLM 调用统一 client 已就位（红线 §6 项可勾）。
+- [ ] `prompts/` 目录已建立（与 `docs/prompts/` 区分：`prompts/` 是运行时 prompt 文件，`docs/prompts/` 是 agent 操作手册）。
+- [ ] eval baseline 计划已写（即使未实施）。
+
 ---
 
 ## Feature Checklist
 
-- [ ] 已有关联 design doc。
+- [ ] 已有关联 design doc，并位于 `docs/design/active/`（开工前从 `backlog/` 移过来）。
+- [ ] design doc 关联了 requirements doc 和（如有）相关 ADR。
 - [ ] 已有关联 requirements doc。
 - [ ] Scope 和 non-goals 明确。
 - [ ] 已识别影响目录。
 - [ ] 数据、状态、API、UI 变化已写清。
+- [ ] **不触 `CONSTITUTION.md` 红线**；触红线则已走豁免/修改流程。
+- [ ] 触动架构维度的决策已开 ADR（或更新现有 ADR）。
 - [ ] UI 改动：layout spec 已更新或新增。
 - [ ] UI 改动：所选组件全部在 `DESIGN.md` 内；新组件已先入 `DESIGN.md`。
 - [ ] 有测试或验证计划。
 - [ ] 已判断是否需要 changelog。
 - [ ] 实现已拆成 vertical slices。
+- [ ] `docs/memory-bank/active-context.md` 已写当前焦点（agent 协作项目）。
 
 ---
 
@@ -159,11 +181,44 @@ npm run build
 - [ ] Diff 聚焦一个 topic。
 - [ ] 没有无关格式化噪音。
 - [ ] 没有提交生成文件或运行时文件。
-- [ ] Design doc、requirements doc、架构文档已同步。
+- [ ] **`CONSTITUTION.md` 红线 0 触发**（或已走豁免流程并在 PR body 注明）。
+- [ ] Design doc 已关联，状态正确（feature 完成时已从 `active/` 移到 `done/` 并回填 `Validation Results`）。
+- [ ] requirements doc、架构文档已同步。
+- [ ] 架构维度变更：对应 ADR 已新建/更新。
 - [ ] UI 改动：DESIGN.md / layout spec 已同步。
 - [ ] 验证命令结果明确。
 - [ ] 风险和回滚方式已说明。
 - [ ] 分支与提交信息符合 `BRANCHING.md`。
+- [ ] `docs/memory-bank/active-context.md` 已更新（agent 协作项目）。
+
+---
+
+## Constitution 红线触发处理 Checklist
+
+agent / 开发者发现自己的实现**会**触线时：
+
+- [ ] **立刻停下**，不要"绕路实现"（绕路通常等于偷偷违反）。
+- [ ] 在 PR / 对话中明示触发哪条（例 `Constitution §2 架构边界`）。
+- [ ] 给三种路径供用户选择：
+  - (a) **改方案规避**：调整实现方式，红线不变。
+  - (b) **提议放宽红线**：开 PR 修改 `CONSTITUTION.md`，至少 2 名维护者批准。
+  - (c) **临时豁免**：由 owner 批准，明确截止时间和补救计划，记入 changelog。
+- [ ] 由 owner 决策，不要 agent 自行选路径。
+
+> 红线之外的"觉得不太好"不是触线，走 `DEVELOPMENT.md` / patterns.md 路线沟通。
+
+---
+
+## Memory Bank Hygiene Checklist（agent 协作项目）
+
+每次会话结束前，agent 自检：
+
+- [ ] `active-context.md` `Last updated` 已刷。
+- [ ] 已完成 / 进行中 / 下一步 / 给下一会话留言 全部更新（"留言"必须具体，不写"继续"）。
+- [ ] 阻塞与决策待定已列。
+- [ ] 发现新 pattern / 反模式 → **提议**更新 `patterns.md`（不擅自改）。
+- [ ] 发现 `tech-context.md` 与代码现实漂移 → 提议更新。
+- [ ] 没把密钥 / 客户名单 / 内部链接（含 token 的）写进 memory-bank。
 
 ---
 
@@ -184,6 +239,13 @@ npm run build
 - AI 生成代码后不验证。
 - PR 不写风险和验证方式。
 - 接手项目立刻"重构整理"，破坏现有约定。
+- `CONSTITUTION.md` 写成"代码风格 / 一般最佳实践"大杂烩，触线变成"风格不统一"，红线失效。
+- design doc 全堆在 `docs/design/` 一层，没有 lifecycle，agent 看不出哪份还有效。
+- ADR 写成"我们决定用 X"一句话，没有 Options Considered 与 Consequences，未来无法回溯。
+- Memory Bank 把 `ARCHITECTURE.md` 全文复制进 `tech-context.md` → 双份维护必漂移。
+- `active-context.md` 多会话不更新 → agent 基于过期信息工作。
+- 把密钥 / 客户名单 / 内部链接写进 memory-bank → 它会被 agent 多次读到。
+- prompts 写成长篇散文，agent 难解析；或一个 prompt 包含多个意图。
 
 ---
 

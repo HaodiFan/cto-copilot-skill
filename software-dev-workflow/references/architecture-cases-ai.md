@@ -10,6 +10,88 @@
 
 ---
 
+## 0. AI 任务目标分流（先于 LLM / Agent）
+
+AI 项目不要默认等于 LLM 项目。Stage 3 先识别任务目标属于哪个经典场景，再结合**成本、时效、效果、流量、私有化要求**选择：
+
+1. 经典算法
+2. 经典算法 + LLM/VLM 兜底
+3. 纯 LLM/VLM
+
+成本估算要显式写进 design doc。粗估时可先按单次 LLM/VLM 调用 `0.1 RMB / task` 估算，再替换为具体模型价格。比如 `100000 task/day` 约等于 `10000 RMB/day`，通常不适合纯 API LLM 方案，除非业务价值明确覆盖成本。
+
+### 0.1 NLP 经典场景
+
+典型任务：文本分类、意图识别、情感分析、关键信息提取、命名实体识别、规则字段抽取。
+
+#### NLP 分层路线
+
+| Level | 默认方案 | 适用场景 | 升级信号 |
+|---|---|---|---|
+| Level 1 | 规则 / 正则 / 字典 / 模板 | 格式稳定、字段固定、可解释性强、成本敏感 | 规则爆炸、长尾表达多 |
+| Level 2 | PaddleNLP 零样本 NLP 相关能力 | 没有训练集但标签相对固定；希望本地/低成本快速 baseline | 准确率不足、领域语义复杂 |
+| Level 3 | BERT / PaddleNLP fine-tune | 长期运行、私有化部署、预算不高、有数据集或可标注 | 工程量不足、标注成本过高、长尾变化快 |
+| Level 4 | LLM structured output / prompt | 无数据集、需要快速落地、流量不大、语义复杂 | 日调用量大、成本不可接受、强私有化 |
+
+分类任务默认判断：
+
+- **没有数据集**：先用 LLM prompt / structured output 快速落地，建立可用 baseline 和失败样例。
+- **长期运行 + 私有化部署 + 预算不高**：优先验证 BERT / PaddleNLP 能否达到精度；可用 LLM 作为低置信度兜底。
+- **快速落地 + 工程量要少 + 流量不大**：推荐 LLM。成本主要是 API token，必须按日调用量估算。
+- **高流量（例如 100000/day 量级）**：优先小模型/经典算法；LLM 只做抽样、人审辅助、低置信度兜底或离线复核。
+
+关键信息提取默认混合：
+
+- 固定格式：规则/正则 + schema 校验。
+- 半结构化：规则/模板 + PaddleNLP/BERT 抽取 + 字段校验。
+- 自由文本/长尾表达：LLM structured output + Pydantic/schema 校验。
+- 关键字段：LLM 不直接拍板，必须有规则校验、人审或低置信度队列。
+
+### 0.2 CV / VLM 经典场景
+
+典型任务：图像分类、目标检测、图像理解、OCR 辅助、实体/实例分割、质量检测、相似度检索。
+
+| 场景 | 默认选择 | 说明 |
+|---|---|---|
+| 固定图像识别 / 检测 | YOLO 系列 | 任务固定、类别明确、需要 bbox/计数/缺陷定位 |
+| 精准分割 | YOLO-seg / 专用分割模型 | 精度和线上稳定性优先 |
+| 通用分割 / 交互式分割 | SAM | 类别变化大、先做通用 mask 或辅助标注 |
+| 图像语义比对 / 粗比 | image embedding + 向量库 | 相似款、重复图、素材语义检索 |
+| 随机问题 / 图像理解 | VLM（视觉语言模型） | 开放问答、描述、解释、审核建议；部署时可用厂商 API 或 vLLM 等推理服务 |
+
+默认原则：
+
+- 固定识别、检测、分割任务不要优先 VLM；先用 YOLO / YOLO-seg / SAM / embedding 等专用栈。
+- VLM 适合开放图像理解和兜底解释，不作为高精度 bbox/mask 真相源。
+- CV 可以多技术栈组合：`YOLO 检测 → SAM/YOLO-seg 分割 → embedding 粗比 → VLM 理解/解释`。
+- 流量是关键决策项：高频任务优先专用模型；VLM 用于低频、长尾、抽样审核或兜底。
+
+### 0.3 统计建模 / 时序分析
+
+典型任务：销量预测、库存预警、价格趋势、异常检测、留存/转化分析、周期性指标分析。
+
+默认路线：
+
+- 表格/经营预测优先 XGBoost / LightGBM baseline。
+- 每类具体场景再查对应 SOTA 或领域常用模型；不要凭“AI”泛化选型。
+- 时序必须做时间切分验证、滚动回测和业务解释，不用随机切分假装准确。
+- LLM 不直接作为数值预测核心；它只做解释报告、洞察草稿，或通过 Agent 调用统计/预测工具实现 chat analysis。
+
+### 0.4 选型矩阵
+
+| 场景 | Level 1 规则/正则 | Level 2 PaddleNLP 零样本 | Level 3 BERT/PaddleNLP | Level 4 LLM/VLM 兜底 | 纯 LLM/VLM |
+|---|---|---|---|---|---|
+| NLP 固定分类 | ✅ | ✅ | ✅ | ◯ | ◯（低流量/快落地） |
+| NLP 关键信息提取 | ✅ | ◯ | ◯ | ✅ | ◯（长尾自由文本） |
+| 高流量文本任务 | ✅ | ◯ | ✅ | ◯（低置信度） | ❌ |
+| 固定图像检测 | ❌ | ❌ | ✅（YOLO 等专用模型） | ◯（解释） | ❌ |
+| 图像分割 | ❌ | ❌ | ✅（YOLO-seg/SAM） | ◯（解释） | ❌ |
+| 图像开放理解 | ❌ | ❌ | ◯ | ✅ | ✅ |
+| 时序预测 | ✅（统计 baseline） | ❌ | ✅（XGBoost/领域模型） | ◯（解释） | ❌ |
+| chat 分析 / 报告生成 | ◯ | ❌ | ◯ | ✅ | ✅ |
+
+---
+
 ## A. LLM 调用方式
 
 ### A.1 直连厂商 API（OpenAI / Anthropic / Google / 云厂商托管）
@@ -120,6 +202,20 @@
 - **常见组合**：Temporal/Inngest/Trigger.dev + 一组 agent worker；或自建队列 + worker。
 - **常见踩坑**：用普通队列做长事务，状态飘；用工作流引擎。
 
+### B.5 流式任务 Watchdog（first chunk / chunk idle / total timeout）
+
+- **一句话定位**：对 LLM/Agent 长任务的流式输出建立可观测的超时语义。
+- **适用场景**：SSE/WebSocket 流式返回、CrewAI/LangChain event bus、长链 Agent、用户等待可见进度。
+- **反例**：纯同步短调用，直接 request timeout 足够。
+- **主要代价**：需要统一 request_id / call_id / step_run_id；要区分“请求活跃心跳”和“真实输出 chunk”。
+- **常见组合**：
+  - `first_chunk_timeout`：调用开始后一直没有首个 chunk。
+  - `chunk_idle_timeout`：首个 chunk 后长时间没有新 chunk。
+  - `total_timeout`：整个 step 的最大耗时。
+  - `cancel/abandoned` 状态：外层已超时但底层 provider 后续仍返回。
+- **决策信号**：用户能看到“开始了但一直没字”；线上排障需要知道卡在首包还是中途静默。
+- **常见踩坑**：把 `llm_start` 或最终 `llm.call()` 返回当作输出活动，导致 watchdog 误判；流式活跃性应以 chunk 事件为主信号。
+
 #### 决策矩阵 — Agent Runtime
 
 | 场景 | In-process | Sidecar | Remote | Orchestrator |
@@ -129,6 +225,7 @@
 | 多客户端共用 | ❌ | ◯ | ✅ | ◯ |
 | 长链 / 多 agent | ❌ | ◯ | ✅ | ✅ |
 | 高并发批处理 | ❌ | ❌ | ◯ | ✅ |
+| 流式用户等待 | ⚠️ | ◯ | ✅ | ◯ |
 
 ---
 
@@ -374,6 +471,25 @@
 - **常见组合**：Jinja/Mustache 模板 + 单元测试 prompt 渲染。
 - **常见踩坑**：把 prompt 散落各处；强制全部从 `prompts/` 加载。
 
+生产链路建议采用 prompt registry，而不是把大 prompt 内联在 YAML 或代码中：
+
+```text
+prompts/
+└── <task_name>/
+    ├── manifest.yaml        # default_version, aliases, status
+    ├── vYYYY_MM_DD.yaml     # system/user template/schema
+    └── eval_cases.jsonl
+```
+
+`manifest.yaml` 至少包含：
+
+- `default_version`
+- `aliases`（如 `current`、`original`）
+- `versions`
+- 每个版本的 `status`、`summary`、`based_on`
+
+运行时记录 `requested_prompt_variant` 和 `resolved_prompt_version`。版本不存在必须快速失败，不静默回退。
+
 ### G.3 平台托管（PromptLayer / Langfuse / LangSmith / Helicone）
 
 - **适用**：产品/运营改 prompt；需要 A/B；要观测每条 prompt 表现。
@@ -384,6 +500,8 @@
 
 - 每条 prompt 必须有 ID + 版本；线上引用版本而非"最新"。
 - A/B 关注点：质量（人评/eval）+ 成本（token）+ 延迟。
+- 回滚优先改 manifest 的默认指针，不改业务代码。
+- 单请求回放允许显式指定版本号，保证历史问题可复现。
 
 #### 决策矩阵 — Prompt 管理
 
@@ -427,6 +545,20 @@
 
 - 单次调用全链路（prompt + tool calls + 结果）入 Langfuse/LangSmith/Helicone。
 - 一定要采样保存 prompt 与输出，否则线上故障无法复盘。
+- 每次调用至少记录：
+  - `request_id` / `call_id` / `step_run_id`
+  - provider / model / route / retry / timeout
+  - prompt id / prompt version / input hash
+  - token usage / latency / first chunk latency / finish reason
+  - structured output 校验结果
+  - error / cancel / abandoned 状态
+
+### H.6 Replay / 失败用例库
+
+- **一句话定位**：把线上失败调用转成可重复执行的回归样例。
+- **适用场景**：prompt/model/路由频繁变更；客户反馈需要复盘；强质量要求。
+- **常见组合**：trace payload → 脱敏 → eval case → 修复后纳入 CI 或手动 pre-release gate。
+- **常见踩坑**：只保留最终错误文案，不保留 prompt version 和输入上下文，导致无法复现。
 
 #### 决策矩阵 — 评估
 
@@ -436,6 +568,7 @@
 | 生产产品 | ✅ | ◯ | ◯ | ◯ | ✅ |
 | 强依赖质量 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 开放生成 | ◯ | ◯ | ✅ | ✅ | ✅ |
+| prompt 频繁迭代 | ✅ | ◯ | ◯ | ◯ | ✅ |
 
 ---
 
@@ -506,6 +639,7 @@
 ### J.3 Output 截断与流式
 
 - max_tokens 设上限；用户感知用流式 first-byte。
+- 流式链路必须定义 first chunk timeout、chunk idle timeout 和 total timeout，阈值走配置，不在业务代码里 hardcode。
 
 ### J.4 Embedding 缓存
 
@@ -528,6 +662,7 @@
 | 首字慢 | 流式 + 减小 system prompt | 边缘部署 / 区域选择 |
 | 长尾延迟大 | 超时 + 重试 + fallback 模型 | rerank 异步 / 跳过 |
 | 高频固定任务 | 蒸馏 / 微调 | 规则前置不调 LLM |
+| 流式中途卡死 | chunk idle timeout + cancel 标记 | fallback / retry / 用户可见恢复 |
 
 ---
 
@@ -567,6 +702,7 @@
 
 | AI 维度 | 选定方案 | 主要理由 | 主要代价 | 退出成本 |
 |---|---|---|---|---|
+| AI 任务类型分流（0） | | | | |
 | LLM 调用方式（A） | | | | |
 | Agent runtime 形态（B） | | | | |
 | 工具调用协议（C） | | | | |
@@ -576,8 +712,10 @@
 | 向量库（F） | | | | |
 | Prompt 管理（G） | | | | |
 | 评估方案（H） | | | | |
+| Trace / replay（H） | | | | |
 | 安全与审核（I） | | | | |
 | 成本与延迟优化（J） | | | | |
+| 流式 timeout 语义（B/J） | | | | |
 | 反馈闭环（K） | | | | |
 
 > 没有 AI 能力的项目跳过本文件。Agentic 关键的项目（Coding Agent、Research Agent、客服 Agent、桌面 Agent）通常 A–I 全部要决策。

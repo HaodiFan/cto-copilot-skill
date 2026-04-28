@@ -83,6 +83,7 @@ docs/prompts/
 ## 我需要的输入
 - 用户提供的需求文档（或同意我先生成 Requirements Doc 模板让用户填写）
 - 项目形态候选（Web+Backend / Desktop+Local Agent / Python Agent/CLI / Library / Monorepo / Unknown）
+- 业务场景信号（RPA/采集、OCR、视觉质检、数据治理、LLM 生产链路、POC 等，如有）
 - 关键约束（语言、合规、时间、预算）
 
 ## 我会交付
@@ -95,19 +96,22 @@ docs/prompts/
 ## 步骤
 1. 校验需求文档完备性（references/checklists.md）
 2. 形态判断走 architecture-cases.md §0 的 4 步法
-3. 走 architecture-cases.md 19 大类 + AI 项目 architecture-cases-ai.md 11 大类，逐项确定方案
-4. 落地 BRANCHING.md（决策方向：trunk-based / git-flow / GitHub flow）
-5. 落地 Constitution.md（项目红线）
-6. 落地 starter tree（references/project-blueprints.md）
-7. 初始化 Memory Bank（references/memory-bank-guide.md）
-8. 输出首次提交清单 + Stage 4 完成判定
+3. 如命中业务自动化场景，先读 scenario-playbooks.md，确定最小切片和验证门禁
+4. 走 architecture-cases.md 20 大类 + AI 项目 architecture-cases-ai.md 11 大类，逐项确定方案
+5. 落地 BRANCHING.md（决策方向：trunk-based / git-flow / GitHub flow）
+6. 落地 Constitution.md（项目红线）
+7. 落地 starter tree（references/project-blueprints.md）
+8. 初始化 Memory Bank（references/memory-bank-guide.md）
+9. 输出首次提交清单 + Stage 4 完成判定
 
 ## 引用的 references
 - references/stage-playbook.md（Stage 0–4）
+- references/scenario-playbooks.md（命中场景时）
 - references/architecture-cases.md
 - references/architecture-cases-ai.md（AI 项目）
 - references/project-blueprints.md
-- references/spec-templates.md
+- references/spec-templates.md（模板索引）
+- references/templates-core.md / templates-governance.md / templates-specs.md（按需）
 - references/memory-bank-guide.md
 - references/checklists.md（需求完备性 + 新项目 checklist）
 
@@ -187,7 +191,7 @@ docs/prompts/
 
 ## 步骤
 1. 校验关联 requirements 是否完备（checklists.md 完备性 checklist）
-2. 若无 design doc，按 spec-templates.md 创建 v0.0.1
+2. 若无 design doc，按 `spec-templates.md` → `templates-specs.md` 创建 v0.0.1
 3. UI 类：layout spec → 组件选择查 DESIGN.md
 4. 拆 vertical slices，标 validation gate
 5. 检查 Constitution 红线 + patterns.md 模式
@@ -195,7 +199,8 @@ docs/prompts/
 
 ## 引用的 references
 - references/stage-playbook.md（Stage 5）
-- references/spec-templates.md
+- references/spec-templates.md（模板索引）
+- references/templates-specs.md（Design Doc / PR Body）
 - references/checklists.md（Feature Checklist）
 - references/memory-bank-guide.md（patterns.md / active-context.md）
 
@@ -217,13 +222,14 @@ docs/prompts/
 - Stage 2，要建 PRD/design doc
 
 ## 步骤
-1. 套 spec-templates.md 的 Design Doc 模板
+1. 套 `spec-templates.md` → `templates-specs.md` 的 Design Doc 模板
 2. 关联 requirements 与（UI 类）layout spec
 3. 写验收标准 + 回滚点
 4. Status 默认 `draft`，归档到 `docs/design/`
 
 ## 引用
-- references/spec-templates.md
+- references/spec-templates.md（模板索引）
+- references/templates-specs.md（Design Doc）
 - references/stage-playbook.md（Stage 2）
 
 ## 完成判定
@@ -243,12 +249,13 @@ docs/prompts/
 ## 步骤
 1. 找 `docs/decisions/` 下当前最大编号 N
 2. 新建 `ADR-<N+1>-<kebab-title>.md`
-3. 套 spec-templates.md 的 ADR 模板
+3. 套 `spec-templates.md` → `templates-governance.md` 的 ADR 模板
 4. 链接到 ARCHITECTURE.md Technical Baseline 对应行
 5. 提交 PR 走 review
 
 ## 引用
-- references/spec-templates.md（ADR 模板）
+- references/spec-templates.md（模板索引）
+- references/templates-governance.md（ADR 模板）
 - references/architecture-cases.md / architecture-cases-ai.md（决策时查 case）
 
 ## 完成判定
@@ -271,11 +278,12 @@ docs/prompts/
 2. 跑 Constitution 红线检查
 3. 同步 design doc / requirements / DESIGN（UI）/ ARCHITECTURE（架构改动）
 4. 更新 active-context.md：标 PR 状态
-5. 输出 PR body（spec-templates.md 模板）
+5. 输出 PR body（`spec-templates.md` → `templates-specs.md` 模板）
 
 ## 引用
 - references/checklists.md（PR Readiness）
-- references/spec-templates.md（PR Body）
+- references/spec-templates.md（模板索引）
+- references/templates-specs.md（PR Body）
 
 ## 完成判定
 - [ ] PR Readiness 全过

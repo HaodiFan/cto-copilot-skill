@@ -56,6 +56,8 @@ docs/
 | PR Body | `templates-specs.md` |
 | Memory Bank | `memory-bank-guide.md` |
 | Prompts 操作手册 | `prompts-guide.md` |
+| Skill 级 L1 纠偏日志 | `lessons.md` |
+| Skill 级 L2 验证模式 | `patterns-skill.md` |
 
 ## 使用原则
 

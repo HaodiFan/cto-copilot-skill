@@ -308,6 +308,40 @@ agent / 开发者发现自己的实现**会**触线时：
 
 ---
 
+## Skill Knowhow Hygiene Checklist（每次会话末，agent 自检）
+
+> 让 skill 自我进化：用户每次纠偏都被结构化捕获到 `references/lessons.md`（L1）；多条同主题 lesson 合并到 `references/patterns-skill.md`（L2）；pattern 验证够多后开 PR 升级到对应 reference（L3）。详见 SKILL.md「Knowhow 沉淀规则」。
+
+### 会话开始时
+
+- [ ] 已按本次任务的阶段 / 形态 / 场景 / 架构维度，用 Tag 检索 `lessons.md` 与 `patterns-skill.md` 的 active 条目。
+- [ ] 命中的 active lesson / pattern 已写进方案约束，并在回复里显式引用 `L-NNNN` / `P-NNNN`。
+
+### 会话进行中
+
+- [ ] 用户回复包含捕获信号（不对 / 应该是 / 错了 / 我之前是 / 不要 X 要 Y / 这一步不该现在做）→ 在该轮回复末尾追加「📌 是否捕获 lesson」提议。
+- [ ] 信号弱 / 单纯澄清 / 闲聊 → 不硬捕获。
+
+### 会话结束时
+
+- [ ] 触发了捕获信号且用户确认 → 按 `lessons.md` 模板追加 L-NNNN（连续编号）。
+- [ ] Tag 全部在 `lessons.md` Tag 词表内。
+- [ ] 「适用条件」「是否可泛化」字段非空。
+- [ ] 同 Tag + 同主题 active lesson ≥ 2 条 → 提议 L1 → L2 promotion。
+- [ ] 单条 lesson 是「仅特定项目」→ **不**写到 `lessons.md`，引导用户写到该项目自己的 `docs/memory-bank/patterns.md`。
+
+### 反模式（agent 不要写进 lessons / patterns）
+
+- [ ] 不把个人偏好当 lesson。
+- [ ] 不把 reference 已有结论复述成 lesson。
+- [ ] 不把项目特定写法写到 skill 级 lessons.md。
+- [ ] 不写秘密 / 客户名 / token / 真实数据。
+- [ ] 一条 lesson 一个意图（多意图拆条）。
+- [ ] 没有「原因 / 适用条件」的 lesson 拒绝写入。
+- [ ] pattern 没有「反例 / 不适用」字段拒绝合并。
+
+---
+
 ## Memory Bank Hygiene Checklist（agent 协作项目）
 
 每次会话结束前，agent 自检：
@@ -345,6 +379,10 @@ agent / 开发者发现自己的实现**会**触线时：
 - `active-context.md` 多会话不更新 → agent 基于过期信息工作。
 - 把密钥 / 客户名单 / 内部链接写进 memory-bank → 它会被 agent 多次读到。
 - prompts 写成长篇散文，agent 难解析；或一个 prompt 包含多个意图。
+- 用户给出明确纠偏后 agent 不捕获到 `lessons.md`，下次同类问题再犯同样错。
+- 把项目特定写法写进 skill 级 `lessons.md`，污染跨项目知识库（应进项目自己的 `docs/memory-bank/patterns.md`）。
+- 把"个人偏好 / 未验证假设"当 lesson 写进 `lessons.md`，让未来 agent 误信。
+- pattern 与 reference 冲突但不标 promotion 状态，形成双份真相源。
 
 ---
 

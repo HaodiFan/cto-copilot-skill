@@ -702,9 +702,9 @@ prompts/
 
 ## AI Stage 3 决策清单（在通用清单后增补）
 
-> AI 项目专用的 master checklist。`stage-playbook.md` Stage 3 直接指向本清单——通用 21 项跑完再跑这 14 项 AI 维度。
+> AI 项目专用的 master checklist。`stage-playbook.md` Stage 3 直接指向本清单——通用 21 项跑完再跑这 15 项 AI 维度。
 
-完成 `architecture-cases.md` 的 20 项后，AI 项目还需在 `ARCHITECTURE.md` 的 Technical Baseline 下增补 AI 维度：
+完成 `architecture-cases.md` 的综合决策清单后，AI 项目还需在 `ARCHITECTURE.md` 的 Technical Baseline 下增补 AI 维度：
 
 | AI 维度 | 选定方案 | 主要理由 | 主要代价 | 退出成本 |
 |---|---|---|---|---|

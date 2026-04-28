@@ -118,7 +118,7 @@ P0 不做 <non-goal>。
 1. **形态决策**：用 `architecture-cases.md` 的 4 步法确定项目形态。
 2. **关键架构决策清单**：直接读 master checklist，**不要再跳两个文件拼装**：
    - 通用 21 项：`architecture-cases.md` 文末「综合决策清单（Stage 3 落地用）」。
-   - AI 增补 14 项（仅 AI / Agent 项目）：`architecture-cases-ai.md` 文末「AI Stage 3 决策清单」。
+   - AI 增补 15 项（仅 AI / Agent 项目）：`architecture-cases-ai.md` 文末「AI Stage 3 决策清单」。
    - 两份清单的结论统一写进 `ARCHITECTURE.md` 的 Technical Baseline 表。每项落地见对应章节（§0–§20 / §A–§K）。
 3. **真相源声明**：每个领域唯一 owning layer。外部平台默认是 integration，不是真相源，除非文档明确说明。
 4. **分支规范前置**：在脚手架之前，先定 `BRANCHING.md`（见 `spec-templates.md` → `templates-core.md`）。这是 trunk-based / git-flow / GitHub flow 的明确选择，不留模糊。

@@ -4,7 +4,7 @@
 
 ## Status
 
-- Version: 0.4.0
+- Version: 0.4.1
 - Stage: active
 
 ## Skill 内容
@@ -37,6 +37,16 @@
 - AI agent 跨会话上下文（Memory Bank）+ 可复用动作模板（Prompts）
 - 接手项目专用盘点流程（含自动识别），默认尊重现状；支持 legacy / pre-vibecoding 文档迁移
 - 7 字段「下一步」统一输出格式
+
+## v0.4.1 新增（fact-check + 可增长性优化）
+
+- 三本 case / playbook 边界明文化：`architecture-cases.md`（通用架构）/ `architecture-cases-ai.md`（AI 架构）/ `scenario-playbooks.md`（业务场景落地），三者正交，不复制只指向。
+- Stage 3 master checklist：`stage-playbook.md` Stage 3 直接指向 `architecture-cases.md` 文末「综合决策清单」+ AI 项目再跑 `architecture-cases-ai.md` 文末「AI Stage 3 决策清单」，不再跨文件拼装。
+- 场景 checklist 补齐到 6 类：新增视觉 / 多媒体质检、数据治理 / 分析报表、浏览器自动化 / WebAgent 三组 checklist。
+- 基线 prompt 扩到 11 份：新增 `spike-start`（POC/Spike 启动）与 `scenario-routing`（业务场景路由），回流 v0.4 的 POC 与场景层。
+- POC 升级触发单一真相源：集中在 `scenario-playbooks.md` §G，`checklists.md` 仅指针。
+- SKILL.md 增长规则：明确"路由器、不放内容、软上限 200 行、决策树分支上限 8 条、新 reference 必须三处登记"。
+- 治理小修：`agents/openai.yaml` 加 `version` 字段联动 SKILL.md；`architecture-cases-ai.md` 编号约定与跨文件分工写在文件顶部；Design Doc `superseded by <slug>` vs ADR `superseded by ADR-MMMM` 风格差异显式说明。
 
 ## v0.4.0 新增
 

@@ -2,6 +2,13 @@
 
 用于 Stage 3「架构」决策。覆盖通用软件工程 20 大类。AI / Agent 专项见 `architecture-cases-ai.md`；业务自动化场景的落地细节见 `scenario-playbooks.md`。
 
+> **三本 case/playbook 的分工**（v0.4.1 起明确）：
+> - 本文件：**通用架构选型**（数字编号 0–20）。回答「在哪一层、用什么形态、付什么代价、退出多痛」。
+> - `architecture-cases-ai.md`：**AI / Agent 专项架构选型**（字母编号 A–K）。同样回答架构维度问题，只是 AI 特异。
+> - `scenario-playbooks.md`：**业务场景落地**（A–G）。回答「这类业务最小切片是什么、先防什么坑、验证什么算闭环」。
+>
+> 三者**正交**：架构决策不做场景指南，场景指南不做架构决策。命中重叠话题（例如 LLM 生产链路）时，scenario-playbooks 给切片，architecture-cases-ai 给选型——两边内容不复制，只互相指向。
+
 每个 case 统一格式：
 
 ```text
@@ -1109,6 +1116,8 @@
 ---
 
 ## 综合决策清单（Stage 3 落地用）
+
+> Stage 3 master checklist。`stage-playbook.md` Stage 3 直接指向本清单——不要再跨文件拼装。AI 项目跑完本清单后再跑 `architecture-cases-ai.md` 文末的「AI Stage 3 决策清单」。
 
 按这个顺序逐项确定（每项写进 `ARCHITECTURE.md` 的 Technical Baseline 表）：
 

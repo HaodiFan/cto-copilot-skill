@@ -24,7 +24,7 @@ L3 Reference 升级    owner 开 PR 修改对应 reference
 ### P-NNNN: <一句话标题>
 
 - Created: <YYYY-MM-DD>
-- Status: <active | promoted-to-reference | superseded by P-MMMM | deprecated>
+- Status: <active | pending-review | promoted-to-reference | superseded by P-MMMM | deprecated>
 - Tags: <从 lessons.md 顶部 Tag 词表挑>
 - Source lessons: L-<NNNN>, L-<NNNN>（合并的源 lesson）
 - Confirmation count: <被多少次会话验证过>
@@ -63,6 +63,7 @@ L3 Reference 升级    owner 开 PR 修改对应 reference
 ### 字段说明
 
 - **P-NNNN**：连续编号，从 P-0001 开始。
+- **Status**：active 是可直接引用的模式；pending-review 表示与 reference 冲突，owner 决策前只能作为待审证据；promoted-to-reference 表示已进入 reference，reference 成为真相源。
 - **Source lessons**：必须列出所有源 lesson；保证回溯链。
 - **Confirmation count**：每次会话引用 pattern 解决新问题就 +1（agent 应当主动维护，但允许漂移，不是核心字段）。
 - **Promotion 状态**：跟踪 L2 → L3 流程。
@@ -83,7 +84,7 @@ L3 Reference 升级    owner 开 PR 修改对应 reference
 
 - pattern 是 **"reference 的候选补强"**。一旦 promote 进 reference，pattern 标 `Status: promoted-to-reference` 并指向具体 reference 段落。
 - pattern 不能与 reference 同时是 active 真相源。新的 reference PR 合并后，对应 pattern 必须更新状态。
-- 如果 pattern 与 reference 冲突，**reference 优先**，pattern 标 `⚠️ pending review`，等 owner 决策是否升级。
+- 如果 pattern 与 reference 冲突，**reference 优先**，pattern 标 `Status: pending-review`，等 owner 决策是否升级。
 
 ---
 

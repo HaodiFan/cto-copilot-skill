@@ -38,7 +38,7 @@ L3 Reference 升级           owner 开 PR 改对应 reference
 ### L-NNNN: <一句话标题>
 
 - Date: <YYYY-MM-DD>
-- Status: <active | superseded by L-MMMM | deprecated>
+- Status: <active | pending-review | superseded by L-MMMM | deprecated>
 - Captured-from: <对话场景一句话，如「Stage 3 给电商商家后台采集方案时」>
 - Tags: <stage-3 | scenario-rpa | arch-llm | ...>（多标签用逗号；从下面 Tag 词表挑）
 
@@ -69,7 +69,7 @@ L3 Reference 升级           owner 开 PR 改对应 reference
 ### 字段说明
 
 - **L-NNNN 编号**：连续编号，从 L-0001 开始。被 superseded 不释放编号。
-- **Status**：active 是默认；被新 lesson 推翻 → superseded by L-MMMM；明确不再适用 → deprecated。
+- **Status**：active 是默认；与 reference 冲突待 owner 决策 → pending-review；被新 lesson 推翻 → superseded by L-MMMM；明确不再适用 → deprecated。
 - **Captured-from**：让未来的 agent 知道"这条是在什么对话里被纠偏的"，不写客户名/秘密。
 - **Tags 词表**（保持有限，超出时先在本文件顶部加新 tag）：
   - 阶段：`stage-0`–`stage-9`、`stage-p`、`stage-i`
@@ -140,7 +140,7 @@ L3 Reference 升级           owner 开 PR 改对应 reference
 
 **冲突处理**：
 - 多条 lesson 互相冲突 → 写新 lesson 并把旧的标 superseded by L-新编号，给出"什么情况下用旧、什么情况下用新"。
-- lesson 与 reference 的明确陈述冲突 → 默认 reference 优先，记 lesson 标记「⚠️ pending review」由 owner 决定 reference 是否要改（L3）。
+- lesson 与 reference 的明确陈述冲突 → 默认 reference 优先，把 lesson 标为 `Status: pending-review`，由 owner 决定 reference 是否要改（L3）。
 
 ---
 

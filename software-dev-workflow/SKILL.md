@@ -1,12 +1,12 @@
 ---
 name: software-dev-workflow
-description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、当前场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、PR/release readiness、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。
-version: 0.3.0
+description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、业务场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、legacy 项目治理、POC/spike、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、PR/release readiness、RPA/数据采集、OCR/文档智能、视觉质检、LLM 生产链路、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。
+version: 0.4.0
 ---
 
 # 软件开发工作流
 
-用 spec-driven、阶段感知的方式推进软件开发。触发后先判断「新项目还是接手项目」，再判断项目形态和生命周期阶段，读取对应 reference，输出下一步具体动作，而不是一次性倾倒整套方法论。
+用 spec-driven、阶段感知的方式推进软件开发。触发后先判断「新项目还是接手项目」，再判断项目形态、生命周期阶段和业务自动化场景，读取对应 reference，输出下一步具体动作，而不是一次性倾倒整套方法论。
 
 ## 使用原则
 
@@ -15,8 +15,8 @@ version: 0.3.0
 「规划类」7 字段模板（覆盖原先单独的分类块，不要重复输出两组分类）：
 
 ```text
-当前阶段: <0 想法 | 1 需求澄清 | 2 Spec | 3 架构 | 4 脚手架 | 5 Feature 规划 | 6 实现 | 7 验证 | 8 PR/发布 | 9 维护 | I 接手盘点>
-项目形态: <Web+Backend | Desktop+Local Agent | Python Agent/CLI | Library/SDK | Full-stack Monorepo | Unknown>
+当前阶段: <P POC/Spike | 0 想法 | 1 需求澄清 | 2 Spec | 3 架构 | 4 脚手架 | 5 Feature 规划 | 6 实现 | 7 验证 | 8 PR/发布 | 9 维护 | I 接手盘点>
+项目形态: <Web+Backend | Desktop+Local Agent | Python Agent/CLI | Library/SDK | Full-stack Monorepo | Unknown>（如有场景，追加：场景 <RPA/OCR/LLM/POC/...>）
 缺失内容:
 下一步 3 个动作:
 要创建/更新的文件:
@@ -37,19 +37,19 @@ version: 0.3.0
 ### 0. 是接手已有项目吗？（最高优先级）
 
 - 信号：用户描述"接手"、"现有项目"、"老代码"、"刚加入团队"、给出已有 repo URL、问"这项目怎么继续"。
-- 行动：读取 `references/inheriting-projects.md`。先跑 §1.0 自动识别（机器可判断的工具链 / 形态推断），再走 §1.1–1.5 人工盘点。
+- 行动：读取 `references/inheriting-projects.md`。先跑 §1.0 自动识别（机器可判断的工具链 / 形态推断），再走 §1.1–1.5 人工盘点。若是旧式 PRD / refact_plans / 零散 design docs 项目，再走 legacy 迁移路径。
 - 默认立场：**尊重现状，不擅自重构**。先盘点文档与代码现状，缺什么补什么。
 
 ### 1. 是实现/修 bug/迁移任务吗？
 
 - 信号：用户要求 build、fix、add、wire、migrate、implement、写代码、接接口。
-- 行动：读取 `references/stage-playbook.md` Stage 6 与 `references/checklists.md`。
+- 行动：读取 `references/stage-playbook.md` Stage 6 与 `references/checklists.md`。如果命中 RPA / OCR / 视觉质检 / LLM 生产链路 / 浏览器自动化，额外读取 `references/scenario-playbooks.md`。
 - 规则：编辑前先检查 repo；如改动会触动架构边界、状态机、权限、存储、公共 API 或 UI 模式，先更新 spec 再写代码。
 
 ### 2. 是已有项目的新功能规划吗？
 
 - 信号：新增 feature、页面、API、workflow、agent 能力、集成、后台任务，但还没开写。
-- 行动：读取 `references/stage-playbook.md` Stage 5 与 `references/spec-templates.md`。
+- 行动：读取 `references/stage-playbook.md` Stage 5 与 `references/spec-templates.md`。如果功能属于采集、OCR、文档智能、视觉质检、数据治理或 LLM 生产链路，额外读取 `references/scenario-playbooks.md`。
 - 规则：先确认是否已有关联 design doc；没有就先创建或补齐，除非用户明确要 quick spike。
 
 ### 3. 是 review、救火、"下一步做什么"吗？
@@ -58,13 +58,19 @@ version: 0.3.0
 - 行动：读取 `references/stage-playbook.md` 与 `references/checklists.md`。
 - 输出：使用 7 字段模板。
 
-### 4. 是从 0 开始的新项目吗？
+### 4. 是 POC / Spike / 临时验证吗？
+
+- 信号：用户说 POC、spike、demo、sandbox、验证可行性、先试试、一次性脚本、客户演示；生命周期短、未承诺生产。
+- 行动：读取 `references/scenario-playbooks.md` 的「POC / Spike 轻量模式」。
+- 规则：先用轻量文件集，不强行要求完整 `CONSTITUTION` / ADR / Memory Bank；一旦命中升级触发条件，切回正式项目流程。
+
+### 5. 是从 0 开始的新项目吗？
 
 - 信号：用户从想法、空目录、新 repo、"怎么搭项目"开始。
-- 行动：读取 `references/project-blueprints.md`、`references/architecture-cases.md`（AI 项目再加 `architecture-cases-ai.md`）、`references/spec-templates.md`。
-- 规则：按 Stage 0–4 的真实 6 步顺序推进（见 `stage-playbook.md`）；脚手架阶段同时落地 `CONSTITUTION.md`、`docs/decisions/`、`docs/memory-bank/`、`docs/prompts/`（见 `memory-bank-guide.md` 与 `prompts-guide.md`）。
+- 行动：读取 `references/project-blueprints.md`、`references/architecture-cases.md`（AI 项目再加 `architecture-cases-ai.md`）、`references/spec-templates.md`；若业务场景明确，读取 `references/scenario-playbooks.md`。
+- 规则：按 Stage 0–4 的真实 8 步顺序推进（见 `stage-playbook.md`）；脚手架阶段同时落地 `CONSTITUTION.md`、`docs/decisions/`、`docs/memory-bank/`、`docs/prompts/`（见 `memory-bank-guide.md` 与 `prompts-guide.md`）。
 
-### 5. 是方法论或 Skill/文档建设吗？
+### 6. 是方法论或 Skill/文档建设吗？
 
 - 信号：用户在写开发流程、项目规范、模板、方法论或可复用 playbook。
 - 行动：按需读取所有 references，产出简洁可复用的文档。
@@ -80,16 +86,19 @@ version: 0.3.0
 
 形态确定前，最多输出"形态待定 + 候选 2–3 种 + 还差什么信息"。
 
+业务场景判断为 `Unknown` 时，不阻塞项目形态判断；只在采集、OCR、视觉、LLM、数据治理、浏览器自动化等信号明确时读取 `scenario-playbooks.md`。
+
 ## 阶段路由
 
 | 阶段 | 典型信号 | Reference | 下一步重点 |
 |---|---|---|---|
 | I 接手盘点 | 接手已有 repo | `inheriting-projects.md` | 文档/代码盘点，现状报告 |
+| P POC/Spike | 临时验证、demo、sandbox | `scenario-playbooks.md`、`checklists.md` | 轻量文件集 + 升级触发判断 |
 | 0 想法 | 只有产品想法，无 repo | `spec-templates.md` | 一句话定义、P0 非目标、形态候选 |
 | 1 需求澄清 | 业务目标不清 | `stage-playbook.md`、`checklists.md` 的需求完备性 | **要求用户提供需求文档**，agent 不替编 |
 | 2 Spec | PRD/design doc | `spec-templates.md` | 带验收标准的 design doc |
 | 3 架构 | 技术栈、边界、真相源 | `architecture-cases.md`、`architecture-cases-ai.md` | 形态选定 + 关键架构决策清单 |
-| 4 脚手架 | 新 repo、首次提交 | `project-blueprints.md` | starter tree + 分支规范 + 首次提交清单 |
+| 4 脚手架 | 新 repo、首次提交 | `project-blueprints.md`、`spec-templates.md` | starter tree + 分支规范 + 首次提交清单 |
 | 5 Feature 规划 | 缺拆解 | `stage-playbook.md` | milestone 与影响文件 |
 | 6 实现 | 代码变更 | `checklists.md` | 最小切片 + 文档同步 |
 | 7 验证 | 测试、QA | `checklists.md` | 验证矩阵与风险关闭 |
@@ -108,28 +117,36 @@ version: 0.3.0
 
 AI/Agent 类项目额外读取 `references/architecture-cases-ai.md`。
 
+业务自动化场景额外读取 `references/scenario-playbooks.md`，尤其是 RPA/数据采集、OCR/文档智能、视觉/多媒体质检、数据治理/分析报表、LLM 生产链路、浏览器自动化、POC/spike。
+
 ## 核心规则
 
 - spec/design doc 是意图真相源，代码是意图实现。
 - **业务需求文档必须由用户提供**，agent 只负责校验完备性、抽取结构、提问澄清，不替用户编造业务意图。
 - 没有 spec，不新增架构层、状态机、存储、权限、全局依赖或公共 API。
 - 全局真相源必须唯一：architecture、development rules、design rules、folder declaration、terminology、changelog、branching、constitution。
-- **`CONSTITUTION.md` 是项目红线**：触线立刻停下、提示用户，不自行突破（详见 `spec-templates.md`）。
-- **架构决策走 ADR**：在 `docs/decisions/ADR-NNNN-*.md` 记录"为什么这么选"（详见 `spec-templates.md`）。
+- **`CONSTITUTION.md` 是项目红线**：触线立刻停下、提示用户，不自行突破（详见 `templates-governance.md`）。
+- **架构决策走 ADR**：在 `docs/decisions/ADR-NNNN-*.md` 记录"为什么这么选"（详见 `templates-governance.md`）。
 - **Memory Bank 是 agent 跨会话上下文**（`docs/memory-bank/`）：开工先读 `active-context.md`，会话结束更新；详见 `memory-bank-guide.md`。
 - **Design doc 有生命周期**：`backlog/ → active/ → done/`，状态由目录位置体现，AGENTS 默认只读 `active/`。
 - 一个 topic 一个分支，避免混入无关变更。
 - 优先做最小 vertical slice（端到端闭环），不做大面积半成品。
 - 信息不足时，优先做可逆的最小假设并明确说明；只有错误假设代价高时才提问。
 - 接手项目默认尊重现状，不擅自重构；缺文档先补文档。
+- POC/spike 默认轻量治理，但命中升级触发条件（多人接手、真实客户数据、持续运行、生产化、存储/权限/API/后台任务）后必须升级到正式项目流程。
+- 业务场景 playbook 提供默认选型和验证门禁；最终架构决策仍以 `ARCHITECTURE.md` + ADR 为准。
 
 ## References
 
 - `references/stage-playbook.md`：按阶段判断信号、产物和下一步动作。
+- `references/scenario-playbooks.md`：按业务自动化场景补充技术选型、最小切片、验证门禁和反模式（RPA/OCR/视觉/数据/LLM/浏览器自动化/POC）。
 - `references/project-blueprints.md`：5 种项目形态的 starter 目录结构与首次提交清单。
-- `references/architecture-cases.md`：通用架构选型 case 库（Repo / 渲染 / 后端 / 数据 / 部署 / 鉴权 / 异步 / 可观测性 / 客户端 / 状态管理 / 测试 / CI/CD / 配置 / i18n / 合规 / 性能等 19 大类）。
+- `references/architecture-cases.md`：通用架构选型 case 库（Repo / 渲染 / 后端 / 数据 / 部署 / 鉴权 / 异步 / 可观测性 / 业务自动化 / 客户端 / 状态管理 / 测试 / CI/CD / 配置 / i18n / 合规 / 性能等 20 大类）。
 - `references/architecture-cases-ai.md`：AI / Agent 专项架构选型 case 库（LLM 调用、Agent runtime、工具调用、记忆、RAG、向量库、Prompt 管理、评估、安全等）。
-- `references/spec-templates.md`：README / ARCHITECTURE / DEVELOPMENT / BRANCHING / DESIGN / AGENTS / **CONSTITUTION（红线）** / **ADR（决策记录）** / Requirements / Design Doc（含 backlog/active/done lifecycle）/ Layout Spec / Folder Declaration / PR 模板。
+- `references/spec-templates.md`：模板索引，按需路由到 `templates-core.md` / `templates-governance.md` / `templates-specs.md`。
+- `references/templates-core.md`：README / ARCHITECTURE / DEVELOPMENT / BRANCHING / DESIGN / AGENTS 模板。
+- `references/templates-governance.md`：CONSTITUTION（红线）/ ADR / Folder Declaration / glossary / changelog 模板。
+- `references/templates-specs.md`：Requirements / Design Doc（含 backlog/active/done lifecycle）/ Layout Spec / PR Body 模板。
 - `references/checklists.md`：验证门禁、需求完备性、PR readiness、反模式和场景 checklist。
 - `references/inheriting-projects.md`：接手已有项目的盘点流程（含 §1.0 自动识别）、现状报告模板、文档补齐顺序。
 - `references/memory-bank-guide.md`：AI agent 跨会话上下文的"指针 + 增量"模式（brief / tech-context / patterns / active-context）。

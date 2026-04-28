@@ -2,5 +2,5 @@
 # 其他 agent 平台请按各自 manifest 规范另存（例如 agents/claude.yaml、agents/cursor.yaml 等）
 interface:
   display_name: "软件开发工作流"
-  short_description: "按项目形态/阶段/是否接手判断下一步"
-  default_prompt: "使用 $software-dev-workflow 评估我的软件项目（新项目还是接手项目、阶段、形态），并告诉我下一步具体该做什么。"
+  short_description: "按阶段/形态/场景判断软件项目下一步"
+  default_prompt: "使用 $software-dev-workflow 评估我的软件项目（新项目还是接手项目、阶段、形态、业务场景），并告诉我下一步具体该做什么。"

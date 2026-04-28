@@ -2,9 +2,31 @@
 
 用于诊断当前软件开发阶段，并决定下一步动作。
 
-阶段 I（接手盘点）见 `inheriting-projects.md`（含 §1.0 自动识别 + §1.1–1.5 人工盘点）。本文件覆盖 Stage 0–9。
+阶段 I（接手盘点）见 `inheriting-projects.md`（含 §1.0 自动识别 + §1.1–1.5 人工盘点）。本文件覆盖 Stage P 与 Stage 0–9。
 
 > 跨阶段产物索引：`CONSTITUTION.md`（Stage 3 起草、长期维护）；ADR `docs/decisions/ADR-NNNN-*.md`（Stage 3 起步、每个关键决策）；Memory Bank `docs/memory-bank/`（Stage 4 初始化、Stage 6/8 持续更新）；Prompts `docs/prompts/`（Stage 4 初始化）；Design doc lifecycle `docs/design/{backlog,active,done}/`（Stage 4 建立、Stage 5–8 流转）。详见 `spec-templates.md`、`memory-bank-guide.md`、`prompts-guide.md`。
+
+---
+
+## Stage P：POC / Spike
+
+典型信号：
+
+- 用户说 POC、spike、demo、sandbox、先试试、验证可行性、一次性脚本。
+- 生命周期短、单人推进、未承诺生产化。
+
+下一步：
+
+- 读取 `scenario-playbooks.md` 的「POC / Spike 轻量模式」。
+- 明确 POC 只回答一个问题：可行性、质量、性能、成本或业务价值。
+- 只要求轻量文件集：`README.md`、依赖声明、`.gitignore`、`docs/spike-note.md`。
+- 先定义升级触发条件：多人接手、真实客户数据、持续运行、产品化、存储/权限/API/后台任务。
+
+停止条件：
+
+- POC 有结论：可行 / 不可行 / 需二次验证。
+- 有证据：样本、指标、截图、失败案例。
+- 明确废弃、归档或升级为正式项目。
 
 ---
 
@@ -46,7 +68,7 @@ P0 不做 <non-goal>。
 
 下一步：
 
-- **请求用户提供需求文档**（参考 `spec-templates.md` 的 Requirements Doc 模板）。
+- **请求用户提供需求文档**（参考 `spec-templates.md` → `templates-specs.md` 的 Requirements Doc 模板）。
 - 用户已给材料的，按模板抽取并回填，缺失项标 `TODO（用户补充）`。
 - 用 `checklists.md` 的「需求文档完备性 checklist」校验是否够开工。
 - 把未知点转成 open questions，按"agent 可推断 / 必须用户回答"分类。
@@ -94,15 +116,15 @@ P0 不做 <non-goal>。
 下一步（建议顺序）：
 
 1. **形态决策**：用 `architecture-cases.md` 的 4 步法确定项目形态。
-2. **关键架构决策清单**：从 `architecture-cases.md` 的 19 大类 + `architecture-cases-ai.md`（AI 项目）逐项过：
+2. **关键架构决策清单**：从 `architecture-cases.md` 的 20 大类 + `architecture-cases-ai.md`（AI 项目）逐项过：
    - Repo 组织、渲染模式、前后端关系、后端架构、数据架构、通信协议
-   - 鉴权、部署、边缘/CDN、异步任务、可观测性
+   - 鉴权、部署、边缘/CDN、异步任务、可观测性、业务自动化与采集工程（命中场景时）
    - 客户端形态、前端状态、测试策略、CI/CD、配置/密钥
    - i18n、合规、性能扩展性
 3. **真相源声明**：每个领域唯一 owning layer。外部平台默认是 integration，不是真相源，除非文档明确说明。
-4. **分支规范前置**：在脚手架之前，先定 `BRANCHING.md`（见 `spec-templates.md`）。这是 trunk-based / git-flow / GitHub flow 的明确选择，不留模糊。
-5. **红线声明**：起草 `CONSTITUTION.md` v0.1（见 `spec-templates.md`），把"绝不能违反"的规则明文化（鉴权边界、真相源、runtime data、AI 调用统一 client 等）。**只放红线，不放偏好**。
-6. **关键决策走 ADR**：每个有后果、未来要回溯的决策（选库、选数据库、选 LLM provider 调用模式、选 monorepo vs polyrepo），写一份 `docs/decisions/ADR-NNNN-*.md`（见 `spec-templates.md`）。决策结论同步进 `ARCHITECTURE.md` Technical Baseline。
+4. **分支规范前置**：在脚手架之前，先定 `BRANCHING.md`（见 `spec-templates.md` → `templates-core.md`）。这是 trunk-based / git-flow / GitHub flow 的明确选择，不留模糊。
+5. **红线声明**：起草 `CONSTITUTION.md` v0.1（见 `spec-templates.md` → `templates-governance.md`），把"绝不能违反"的规则明文化（鉴权边界、真相源、runtime data、AI 调用统一 client 等）。**只放红线，不放偏好**。
+6. **关键决策走 ADR**：每个有后果、未来要回溯的决策（选库、选数据库、选 LLM provider 调用模式、选 monorepo vs polyrepo），写一份 `docs/decisions/ADR-NNNN-*.md`（见 `spec-templates.md` → `templates-governance.md`）。决策结论同步进 `ARCHITECTURE.md` Technical Baseline。
 7. **更新 `ARCHITECTURE.md`** 或等价全局真相源，记录所有决策与代价，并交叉引用 ADR。
 
 规则：
@@ -131,7 +153,7 @@ P0 不做 <non-goal>。
 2. **落地分支规范**：`BRANCHING.md` 必须在第一个非 README commit 之前生效。
 3. **落地架构 + 红线 + 关键 ADR**：`ARCHITECTURE.md` 反映 Stage 3 全部决策；`CONSTITUTION.md` v0.1 落地（红线）；起步 ADR（至少 `ADR-0001` 宣告用 ADR 记录决策）。
 4. **业务目标对齐**：把用户提供的需求文档归档到 `docs/requirements/`，并交叉引用 design doc。建立 `docs/design/{backlog,active,done}/` 三个生命周期目录，把 bootstrap design doc 放到 `active/`。
-5. **页面布局先行**（UI 类项目）：根据需求文档 + `DESIGN.md` 写 layout spec（md 形式，见 `spec-templates.md`），**先于代码与 Figma**。
+5. **页面布局先行**（UI 类项目）：根据需求文档 + `DESIGN.md` 写 layout spec（md 形式，见 `spec-templates.md` → `templates-specs.md`），**先于代码与 Figma**。
 6. **组件选择**：对照 `DESIGN.md` 的组件清单与交互模式选定每个区域用什么组件。新组件必须先进 `DESIGN.md`。
 7. **AI 协作骨架（agent 协作项目）**：初始化 `docs/memory-bank/` 四件套（`brief.md` / `tech-context.md` / `patterns.md` / `active-context.md`，见 `memory-bank-guide.md`）；`docs/prompts/` 至少落地基线 `scaffold-new-project` / `pre-pr` / `update-active-context`（见 `prompts-guide.md`）。
 8. **AGENTS.md 更新**：明示 agent 开工先读 `memory-bank/active-context.md` + `CONSTITUTION.md`，会话末更新 `active-context.md`。

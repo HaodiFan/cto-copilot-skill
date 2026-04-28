@@ -138,6 +138,77 @@ npm run build
 
 ---
 
+## POC / Spike Checklist
+
+适用于生命周期短、单人验证、未进生产的临时验证。命中任一升级触发条件，停止 POC 模式，切回正式项目流程。
+
+### POC 最小必备
+
+- [ ] `README.md` 写清要验证的问题、运行方式、结论位置。
+- [ ] `.gitignore` 覆盖 `output/`、`runtime/`、`logs/`、`uploads/`、`temp_*`、真实数据目录。
+- [ ] 有依赖声明（`requirements.txt` / `pyproject.toml` / `package.json`）。
+- [ ] 有 `docs/spike-note.md` 或等价文档，记录假设、样本、方法、结果、是否升级。
+- [ ] 样本数据脱敏；真实 token/cookie/客户数据不入仓。
+- [ ] 有一个可重复运行的 smoke command。
+
+### 升级触发
+
+- [ ] 第二个开发者要接手。
+- [ ] 接入真实客户数据、生产账号或长期凭证。
+- [ ] 持续运行超过 1 周。
+- [ ] 要成为产品/交付项目基础。
+- [ ] 新增存储、权限、公共 API、后台任务或持续部署。
+
+## 场景 Checklist
+
+命中具体业务场景时，读取 `scenario-playbooks.md` 后做最小自检。
+
+### RPA / 数据采集
+
+- [ ] 中国电商场景已先确定平台：淘宝系 / 京东 / 拼多多 / 抖音。
+- [ ] 已区分数据源类型：公域数据 / 商家管理后台 / 客户自有系统。
+- [ ] 公域数据已记录合法性、授权边界、平台 ToS 风险；逆向/抓包默认不作为推荐路径。
+- [ ] 商家后台数据已优先评估官方 API、后台导出、异步报表下载能力。
+- [ ] 商家后台浏览器自动化已评估 `undetected-chromedriver` + Selenium，不默认使用 plain Chromium。
+- [ ] 浏览器自动化 selector 有集中维护策略；中国电商后台优先 XPath + 文本/层级锚点。
+- [ ] 动作频率有 bounded random sleep、任务级 rate limit、明确等待条件和失败重试上限。
+- [ ] 手机 RPA 方案已说明设备/账号授权、节流、截图/录屏证据、失败状态和人工接管。
+- [ ] 手机 RPA 默认使用 Appium + ADB/iOS automation，并说明设备池和账号状态管理。
+- [ ] 数据来源、授权边界、平台 ToS 风险已记录。
+- [ ] API / 自动化 / OCR / 抓包等方式的选择理由已写清。
+- [ ] raw 证据、标准化结果、分析结果分层。
+- [ ] 登录失效、限流、页面变更、空数据有失败态。
+- [ ] 不提交 cookie、客户数据、导出的敏感原始数据。
+
+### OCR / 文档智能
+
+- [ ] 输出 schema 先于模型实现。
+- [ ] 已判断 OCR 是后台基础能力还是核心能力。
+- [ ] 已记录服务器规格和并发预算；2C2G/2C4G 低配后台优先轻量 OCR，不默认引入 PaddleOCR。
+- [ ] 如选择 PaddleOCR，已有理由：准确度要求高、中文复杂版面、表格/版面恢复或 OCR 是核心能力。
+- [ ] page image / OCR blocks / extracted fields / reviewed result 分层。
+- [ ] 关键字段有置信度、来源页码/bbox、校验或人审。
+- [ ] 至少 3 个真实样本 fixture 或脱敏样本。
+
+### LLM 生产链路
+
+- [ ] AI 任务已先按目标分流到经典场景：NLP 分类/抽取、CV 检测/分割/理解、统计/时序、LLM/Agent 混合。
+- [ ] 已按成本、时效、效果、流量、私有化要求选择经典算法 / 经典算法 + LLM/VLM 兜底 / 纯 LLM/VLM。
+- [ ] LLM/VLM 成本已按单次调用估算；高流量任务（如 100000/day 量级）已避免默认纯 API LLM。
+- [ ] NLP 分类/抽取已评估 Level 1 规则/正则、Level 2 PaddleNLP 零样本、Level 3 BERT/PaddleNLP、Level 4 LLM 兜底。
+- [ ] 没有数据集但要快速落地的 NLP 任务，可用 LLM prompt baseline；长期/私有化/低预算任务需验证 BERT/PaddleNLP。
+- [ ] CV 固定识别/检测优先 YOLO；精准分割优先 YOLO-seg；通用分割/辅助标注可用 SAM；图像理解用 VLM。
+- [ ] 图像语义比对已评估 image embedding + 向量库；VLM 只做开放理解/兜底解释，不替代高精度检测/分割。
+- [ ] 统计/时序任务已建立 XGBoost/LightGBM 或领域 SOTA baseline；LLM 只做解释报告或 Agent 调工具做 chat analysis。
+- [ ] 分类/抽取任务有标签集、schema、字段校验和字段级评估；CV 有标注 schema 与 accuracy/mAP/IoU/recall；时序有 backtest 与 MAE/MAPE/RMSE。
+- [ ] prompt 有 ID、版本、默认指针和回滚路径。
+- [ ] 每次调用记录 provider/model/prompt_version/token/latency/error。
+- [ ] 结构化输出有 schema 校验和失败重试策略。
+- [ ] 失败样例进入 eval 或 replay 用例库。
+- [ ] streaming 场景定义 first chunk、chunk idle、total timeout。
+
+---
+
 ## Feature Checklist
 
 - [ ] 已有关联 design doc，并位于 `docs/design/active/`（开工前从 `backlog/` 移过来）。

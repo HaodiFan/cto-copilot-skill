@@ -67,7 +67,8 @@
 ```md
 # Design Doc: <Topic> v0.0.1
 
-- Status: <draft | active | done | archived | superseded by <slug>>
+- Status: <draft | active | done | archived | superseded by <design-doc-slug>>
+  <!-- design doc 用文件 slug 引用（无连续编号）；ADR 用 ADR-MMMM。两者风格不同是有意为之。 -->
 - Owner: <name or team>
 - Last updated: <date>
 - Started: <YYYY-MM-DD>（active 时填）

@@ -18,8 +18,10 @@
 docs/prompts/
 ├── README.md                 # 索引：列出所有可用 prompt
 ├── scaffold-new-project.md   # 从 0 启动新项目
+├── spike-start.md            # 启动 POC / Spike（轻量模式）
 ├── handover-audit.md         # 接手项目盘点
 ├── new-feature.md            # 已有项目加 feature
+├── scenario-routing.md       # 命中业务场景时如何路由 scenario-playbooks
 ├── new-design-doc.md         # 创建 design doc
 ├── new-adr.md                # 记录架构决策
 ├── pre-pr.md                 # PR 前自检
@@ -69,7 +71,7 @@ docs/prompts/
 
 ## 基线 prompt 模板
 
-下面 9 份是建议默认 ship 的基线模板。项目可挑用、改写、新增。
+下面 11 份是建议默认 ship 的基线模板（v0.4.1 起新增 `spike-start` 与 `scenario-routing`，回流 v0.4 的 POC/Spike 与场景层）。项目可挑用、改写、新增。
 
 ### scaffold-new-project.md
 
@@ -368,6 +370,98 @@ docs/prompts/
 - [ ] root cause 已记录
 ```
 
+### spike-start.md
+
+```md
+# Prompt: Spike Start（启动 POC / Spike）
+
+## 何时用
+- 用户说 POC / spike / demo / sandbox / 试一下 / 一次性脚本
+- 生命周期 < 1 周、单人开发、不进生产、不接真实敏感数据
+- 目标是回答一个明确的可行性问题
+
+## 我需要的输入
+- 要验证的具体问题（一句话）
+- 验收信号：什么结果算 "可行"，什么结果算 "不可行"
+- 数据来源（脱敏样本 / mock / 公开数据）
+- 时间盒（建议 ≤ 5 个工作日）
+
+## 我会交付
+- `README.md`（POC 问题、运行方式、结论位置）
+- `.gitignore`（output / runtime / data / secret 全 ignore）
+- 依赖声明（requirements.txt / pyproject.toml / package.json）
+- `docs/spike-note.md`（假设、方案、样本、结论、是否升级）
+- 可重复运行的 smoke command
+- 升级判断：是否命中升级触发条件
+
+## 步骤
+1. 确认时间盒与升级触发条件已对齐用户。
+2. 落地 4 份最小文件（README / .gitignore / 依赖 / spike-note）。
+3. 写 smoke command，先确保能跑通最小路径。
+4. 实施验证，把假设、方法、样本、结果填回 spike-note。
+5. 收尾：给结论（可行 / 不可行 / 需二次验证）+ 证据 + 下一步（废弃 / 归档 / 升级）。
+6. 任一升级触发条件命中 → 立即停止 POC 模式，切回 `scaffold-new-project`。
+
+## 引用的 references
+- references/scenario-playbooks.md §G（POC / Spike 轻量模式 + 升级触发）
+- references/stage-playbook.md Stage P
+- references/checklists.md（POC / Spike Checklist）
+
+## 输出格式
+7 字段模板，`项目形态` 注明 `POC/Spike`，`停止条件` 必须包含升级触发条件。
+
+## 完成判定
+- [ ] 4 份最小文件已落地
+- [ ] smoke command 可重复运行
+- [ ] spike-note 有结论和证据
+- [ ] 升级判断已显式给出（是 / 否 + 命中哪条）
+```
+
+### scenario-routing.md
+
+```md
+# Prompt: Scenario Routing（业务场景路由）
+
+## 何时用
+- 用户描述命中业务自动化场景：RPA / 数据采集、OCR / 文档智能、视觉 / 多媒体质检、数据治理 / 分析报表、LLM 生产链路、浏览器自动化 / WebAgent。
+- 信号词：电商后台、千牛 / 京麦 / 抖店、PDF / 发票 / 合同、图像质检、经营报表、prompt 多版本、Playwright / Selenium 等。
+
+## 我需要的输入
+- 当前阶段（用 SKILL.md 7 字段先判断）
+- 项目形态（已选 / 待定）
+- 命中的场景（从 scenario-playbooks 表里挑 1 条，或 `Unknown`）
+- 是否已有 design doc / ADR
+
+## 我会交付
+- 命中场景的最小切片清单（直接来自 scenario-playbooks 对应小节）
+- 默认技术选型 + 不推荐反例 + 退出成本
+- design doc 必写章节
+- 验证门禁与反模式
+- 是否需要补 ADR（架构维度变化时）
+
+## 步骤
+1. 在 `scenario-playbooks.md` 场景速查表里定位场景小节（A–G）。
+2. 把该小节的「最小切片」「Design Doc 必写」「验证门禁」「反模式」抽出来。
+3. 如果场景涉及架构维度（LLM 调用方式、RAG、Prompt 管理、向量库等）→ 同步指向 `architecture-cases-ai.md` 对应大类，**不复制内容**。
+4. 把场景信息写进 7 字段模板的 `项目形态` 字段，例如：`Python Agent/CLI（场景：OCR / 文档智能）`。
+5. 校对 checklists.md 对应场景 checklist；缺失项进入 `缺失内容`。
+
+## 引用的 references
+- references/scenario-playbooks.md（首选）
+- references/architecture-cases-ai.md（命中 LLM / Agent 架构维度）
+- references/checklists.md（场景 Checklist）
+- references/spec-templates.md → templates-specs.md（design doc 模板）
+
+## 输出格式
+7 字段模板，`项目形态` 必须带场景标签；`下一步 3 个动作` 至少包含「补齐场景 design doc 必写章节」与「跑场景 checklist」各 1 条。
+
+## 完成判定
+- [ ] 场景已定位到 scenario-playbooks 具体小节
+- [ ] 最小切片 / 默认选型 / 验证门禁 / 反模式 已抽到回答里
+- [ ] 架构维度变化已明确是否需要 ADR
+- [ ] 场景 checklist 已跑或已记入 `缺失内容`
+```
+
 ---
 
 ## prompts/README.md（索引）
@@ -380,8 +474,10 @@ docs/prompts/
 | Prompt | 触发信号 |
 |---|---|
 | scaffold-new-project | 新 repo / 空目录 / "怎么搭" |
+| spike-start | POC / spike / demo / 一次性脚本 / 试一下 |
 | handover-audit | 接手 / 老代码 / "怎么继续" |
 | new-feature | 加功能 / 加页面 / 加 API |
+| scenario-routing | 命中 RPA / OCR / 视觉 / 数据治理 / LLM 生产链路 / 浏览器自动化 |
 | new-design-doc | 要 PRD / design doc |
 | new-adr | 选库 / 改边界 / 改模式 |
 | pre-pr | 准备提交 / ship |

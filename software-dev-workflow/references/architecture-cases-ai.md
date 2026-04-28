@@ -7,6 +7,10 @@
 每大类末尾给决策矩阵。
 
 > 推荐度图例：✅ 推荐 / ◯ 可用但有代价 / ⚠️ 谨慎 / ❌ 不推荐
+>
+> **编号约定**：通用 case 库（`architecture-cases.md`）用数字编号 0–20；本文件用字母编号 A–K，避免跨文件撞号。`## 0. AI 任务目标分流` 是本库的入口分流，不参与字母序。
+>
+> **与 `scenario-playbooks.md` 的边界**：本文件回答「**架构选型**」——在哪一层、用什么形态、付什么代价、退出多痛；`scenario-playbooks.md` 回答「**业务场景落地**」——这类业务最小切片是什么、先防什么坑、验证什么算闭环。LLM 调用方式 / RAG / 向量库 / Prompt 管理 / 评估这类**架构维度**留在本文件；OCR/RPA/视觉/数据治理/LLM 生产链路这类**业务场景**留在 scenario-playbooks。两边内容不互相复制，只互相指向。
 
 ---
 
@@ -697,6 +701,8 @@ prompts/
 ---
 
 ## AI Stage 3 决策清单（在通用清单后增补）
+
+> AI 项目专用的 master checklist。`stage-playbook.md` Stage 3 直接指向本清单——通用 21 项跑完再跑这 14 项 AI 维度。
 
 完成 `architecture-cases.md` 的 20 项后，AI 项目还需在 `ARCHITECTURE.md` 的 Technical Baseline 下增补 AI 维度：
 

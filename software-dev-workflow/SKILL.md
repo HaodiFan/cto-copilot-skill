@@ -1,7 +1,7 @@
 ---
 name: software-dev-workflow
 description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、业务场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、legacy 项目治理、POC/spike、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、PR/release readiness、RPA/数据采集、OCR/文档智能、视觉质检、LLM 生产链路、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。
-version: 0.4.0
+version: 0.4.1
 ---
 
 # 软件开发工作流
@@ -135,6 +135,16 @@ AI/Agent 类项目额外读取 `references/architecture-cases-ai.md`。
 - 接手项目默认尊重现状，不擅自重构；缺文档先补文档。
 - POC/spike 默认轻量治理，但命中升级触发条件（多人接手、真实客户数据、持续运行、生产化、存储/权限/API/后台任务）后必须升级到正式项目流程。
 - 业务场景 playbook 提供默认选型和验证门禁；最终架构决策仍以 `ARCHITECTURE.md` + ADR 为准。
+
+## Skill 增长规则（v0.4.1 起）
+
+为保持 SKILL.md 的"路由器"职能，避免被新加的 case 撑爆：
+
+- **SKILL.md 是路由器，不是内容**。新内容必须落到 `references/`，本文件只能加路由（决策树分支、阶段路由表行、形态路由项、references 列表项）。
+- **软上限 200 行**。超出时优先把内容下沉到 reference，而不是删除路由。
+- **决策树分支上限 8 条**（当前 6 条）。再加分支前先评估能否合并到现有分支（例如新场景大多并到第 1/2/4 条）。
+- **新加 reference 必须在以下三处显式登记**：本文件 References 列表、`spec-templates.md` 路由表（如属于模板）、`README.md` References 列表。
+- **三本 case/playbook 边界**：`architecture-cases.md` 与 `architecture-cases-ai.md` 只放架构选型；`scenario-playbooks.md` 只放业务场景落地；不得跨界复制。详见 `architecture-cases.md` 顶部「三本 case/playbook 的分工」。
 
 ## References
 

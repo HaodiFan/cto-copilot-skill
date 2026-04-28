@@ -116,11 +116,10 @@ P0 不做 <non-goal>。
 下一步（建议顺序）：
 
 1. **形态决策**：用 `architecture-cases.md` 的 4 步法确定项目形态。
-2. **关键架构决策清单**：从 `architecture-cases.md` 的 20 大类 + `architecture-cases-ai.md`（AI 项目）逐项过：
-   - Repo 组织、渲染模式、前后端关系、后端架构、数据架构、通信协议
-   - 鉴权、部署、边缘/CDN、异步任务、可观测性、业务自动化与采集工程（命中场景时）
-   - 客户端形态、前端状态、测试策略、CI/CD、配置/密钥
-   - i18n、合规、性能扩展性
+2. **关键架构决策清单**：直接读 master checklist，**不要再跳两个文件拼装**：
+   - 通用 21 项：`architecture-cases.md` 文末「综合决策清单（Stage 3 落地用）」。
+   - AI 增补 14 项（仅 AI / Agent 项目）：`architecture-cases-ai.md` 文末「AI Stage 3 决策清单」。
+   - 两份清单的结论统一写进 `ARCHITECTURE.md` 的 Technical Baseline 表。每项落地见对应章节（§0–§20 / §A–§K）。
 3. **真相源声明**：每个领域唯一 owning layer。外部平台默认是 integration，不是真相源，除非文档明确说明。
 4. **分支规范前置**：在脚手架之前，先定 `BRANCHING.md`（见 `spec-templates.md` → `templates-core.md`）。这是 trunk-based / git-flow / GitHub flow 的明确选择，不留模糊。
 5. **红线声明**：起草 `CONSTITUTION.md` v0.1（见 `spec-templates.md` → `templates-governance.md`），把"绝不能违反"的规则明文化（鉴权边界、真相源、runtime data、AI 调用统一 client 等）。**只放红线，不放偏好**。

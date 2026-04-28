@@ -1,5 +1,8 @@
 # Launcher manifest（Codex 风格）
 # 其他 agent 平台请按各自 manifest 规范另存（例如 agents/claude.yaml、agents/cursor.yaml 等）
+# version 字段必须与 ../SKILL.md 顶部 frontmatter 的 version 保持一致；版本号在 SKILL.md 升级时同步更新。
+skill: software-dev-workflow
+version: 0.4.1
 interface:
   display_name: "软件开发工作流"
   short_description: "按阶段/形态/场景判断软件项目下一步"

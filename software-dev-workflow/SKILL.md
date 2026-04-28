@@ -1,7 +1,7 @@
 ---
 name: software-dev-workflow
-description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、业务场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、legacy 项目治理、POC/spike、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、PR/release readiness、RPA/数据采集、OCR/文档智能、视觉质检、LLM 生产链路、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。
-version: 0.4.1
+description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、业务场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、legacy 项目治理、POC/spike、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、PR/release readiness、RPA/数据采集、OCR/文档智能、视觉质检、LLM 生产链路、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。Skill 自带三层 knowhow 沉淀机制（lessons / patterns / reference 升级），用户每次纠偏都会被结构化捕获，让 skill 跨会话自我进化。
+version: 0.5.0
 ---
 
 # 软件开发工作流
@@ -119,6 +119,22 @@ AI/Agent 类项目额外读取 `references/architecture-cases-ai.md`。
 
 业务自动化场景额外读取 `references/scenario-playbooks.md`，尤其是 RPA/数据采集、OCR/文档智能、视觉/多媒体质检、数据治理/分析报表、LLM 生产链路、浏览器自动化、POC/spike。
 
+## Knowhow 沉淀规则（v0.5.0 起，让 skill 自我进化）
+
+Skill 有三层 knowhow，agent 必须主动维护：
+
+- L1 `references/lessons.md`：单条纠偏，立即追加（编号 L-NNNN）
+- L2 `references/patterns-skill.md`：验证过的 pattern（编号 P-NNNN）
+- L3 Reference 升级：pattern 影响 reference 核心结论时，owner 开 PR
+
+**会话开始**：按本次任务的 Tag（阶段 / 形态 / 场景 / 架构维度）在 `lessons.md` 与 `patterns-skill.md` 检索 active 条目；冲突时优先 pattern > lesson > reference 默认，并在回复中引用 `L-NNNN` / `P-NNNN`。
+
+**会话进行中**：用户回复出现纠偏信号（「不对 / 应该是 / 错了 / 我之前是 / 不要 X 要 Y / 这一步不该现在做」等）→ agent **必须**在该轮回复末尾追加「📌 是否捕获 lesson」提议。信号弱 / 闲聊不硬捕获。
+
+**会话结束**：触发的捕获信号已处理（捕获 / 用户拒绝 / 判定单纯澄清）；同主题 lesson ≥ 2 条 → 提议 L1 → L2 promotion；pattern 与 reference 冲突 → 提议 L2 → L3 promotion。
+
+详细触发信号词表、Tag 词表、模板、反模式、promotion 流程：见 `references/lessons.md`、`references/patterns-skill.md`、`prompts-guide.md` 的 `capture-lesson` / `promote-pattern`。
+
 ## 核心规则
 
 - spec/design doc 是意图真相源，代码是意图实现。
@@ -160,4 +176,6 @@ AI/Agent 类项目额外读取 `references/architecture-cases-ai.md`。
 - `references/checklists.md`：验证门禁、需求完备性、PR readiness、反模式和场景 checklist。
 - `references/inheriting-projects.md`：接手已有项目的盘点流程（含 §1.0 自动识别）、现状报告模板、文档补齐顺序。
 - `references/memory-bank-guide.md`：AI agent 跨会话上下文的"指针 + 增量"模式（brief / tech-context / patterns / active-context）。
-- `references/prompts-guide.md`：可复用 prompt 模板（scaffold / handover-audit / new-feature / new-design-doc / new-adr / pre-pr / update-active-context / refactor-safely / debug-incident）。
+- `references/prompts-guide.md`：可复用 prompt 模板（scaffold / spike-start / handover-audit / new-feature / scenario-routing / new-design-doc / new-adr / pre-pr / update-active-context / refactor-safely / debug-incident / capture-lesson / promote-pattern）。
+- `references/lessons.md`：**Skill 级 L1 纠偏日志**（每次用户纠正方案，agent 主动追加；连续编号 L-NNNN）。
+- `references/patterns-skill.md`：**Skill 级 L2 验证过的 pattern 库**（来自 lessons 的合并；连续编号 P-NNNN）。

@@ -27,7 +27,9 @@ docs/prompts/
 ├── pre-pr.md                 # PR 前自检
 ├── update-active-context.md  # 会话末更新 memory bank
 ├── refactor-safely.md        # 行为保持型重构
-└── debug-incident.md         # 救火 / 故障排查
+├── debug-incident.md         # 救火 / 故障排查
+├── capture-lesson.md         # 用户纠偏后捕获 L1 lesson
+└── promote-pattern.md        # L1 → L2 / L2 → L3 promotion
 ```
 
 > 路径 `docs/prompts/`，与 `docs/design/`、`docs/governance/`、`docs/memory-bank/` 平级。
@@ -71,7 +73,7 @@ docs/prompts/
 
 ## 基线 prompt 模板
 
-下面 11 份是建议默认 ship 的基线模板（v0.4.1 起新增 `spike-start` 与 `scenario-routing`，回流 v0.4 的 POC/Spike 与场景层）。项目可挑用、改写、新增。
+下面 13 份是建议默认 ship 的基线模板（v0.5.0 起新增 `capture-lesson` 与 `promote-pattern`，支持 skill 自身的 knowhow 沉淀；v0.4.1 已加 `spike-start` 与 `scenario-routing`）。项目可挑用、改写、新增。
 
 ### scaffold-new-project.md
 
@@ -370,6 +372,122 @@ docs/prompts/
 - [ ] root cause 已记录
 ```
 
+### capture-lesson.md
+
+```md
+# Prompt: Capture Lesson（捕获用户纠偏到 L1）
+
+## 何时用
+本轮对话出现以下捕获信号（详见 SKILL.md「Knowhow 沉淀规则」）：
+- 用户否定 / 纠偏：「不对」「应该是」「错了」
+- 经验补充：「这种情况要…」「你忘了…」「我之前是…」
+- 反例提供：「踩过这个坑」「上次就是这样挂了」
+- 选型推翻：「不要 X 要 Y，因为…」
+- 流程纠偏：「这一步不该现在做」「先 X 再 Y」
+
+## 我需要的输入
+- 当前对话场景（一句话脱敏描述，如「Stage 3 给电商商家后台采集方案」）
+- agent 之前的方案 / 推断（错的）
+- 用户给的正确方案 / 反例
+- 用户提示的原因或限制条件
+- 是否跨项目可复用
+
+## 我会交付
+- 一条 lesson 卡片，按 `lessons.md` 模板格式
+- 编号 L-NNNN（在 `lessons.md` 现有最大编号 +1）
+- 多标签 Tag（从 `lessons.md` Tag 词表挑）
+- 是否触发 promotion 提议（同主题 lesson ≥ 2 条 → 建议走 promote-pattern）
+
+## 步骤
+1. 抽取「之前的错误方案」「正确方案」「原因 / 适用条件」三段，每段不超过 2 句话。
+2. 按 `lessons.md` Tag 词表打标签——多标签用逗号，标签必须在词表里。
+3. 判断「是否可泛化」三选一：跨项目 / 仅特定项目 / 仅特定场景。
+   - 仅特定项目 → **不写到 lessons.md**，建议写到该项目自己的 `docs/memory-bank/patterns.md`。
+4. 检查反模式：个人偏好 / 与 reference 重复 / 项目特定 / 含敏感数据 / 多意图 / 无原因 → 任一命中拒绝写入。
+5. 在 `lessons.md` 最末尾追加新条目，编号连续。
+6. 检查同 Tag + 同主题的 active lesson 是否已有 ≥ 1 条 → 触发 promote-pattern 提议。
+
+## 引用的 references
+- references/lessons.md（模板、Tag 词表、反模式）
+- SKILL.md「Knowhow 沉淀规则」一节
+
+## 输出格式
+- 单条 lesson 的完整 markdown（直接可追加到 lessons.md）
+- 末尾附一行：`Promotion 候选: <是 / 否> + 理由`
+
+## 完成判定
+- [ ] 用户已确认这条 lesson 措辞准确
+- [ ] 编号 L-NNNN 连续，无跳号
+- [ ] Tag 全部在词表内
+- [ ] 「适用条件」字段非空
+- [ ] 已写到 lessons.md（agent 输出 diff 给用户审）
+```
+
+### promote-pattern.md
+
+```md
+# Prompt: Promote Pattern（L1 → L2 → L3 升级）
+
+## 何时用
+- L1 → L2：同主题 lesson ≥ 2 条 / 用户说「这是通用模式」/ lesson 在新会话被复用 ≥ 2 次。
+- L2 → L3：pattern 与某 reference 核心结论冲突 / pattern 在多项目验证 / pattern 累计被引用 ≥ 3 次且无反例。
+
+## 我需要的输入
+- 升级方向：L1→L2 还是 L2→L3
+- 源条目：lesson IDs（L-NNNN, ...）或 pattern ID（P-NNNN）
+- 升级理由（命中哪条触发条件）
+- 反例排查结果（有没有反例推翻？）
+
+## 我会交付
+
+### L1 → L2 时
+- 一条 pattern 卡片，按 `patterns-skill.md` 模板格式
+- 编号 P-NNNN（连续）
+- Source lessons 字段填全部源 L-NNNN
+- 决策矩阵（如果多条 lesson 描述同一选型在不同场景下不同推荐）
+- 反例 / 不适用 字段必填
+- 在每条源 lesson 卡片末尾的「🔗 相关」加 `Promoted to: P-NNNN`
+
+### L2 → L3 时
+- PR 草稿：要修改的 reference 文件 + 具体段落 + 新文案
+- PR 描述里链接 P-NNNN 与全部源 L-NNNN
+- pattern 卡片更新 `Status: promoted-to-reference`，写明 reference 段落
+- 新会话的默认行为切换：reference 优先 > pattern
+
+## 步骤
+
+### L1 → L2
+1. 列出所有候选源 lesson（同 Tag + 同主题）。
+2. 抽取共同规律（不是简单合并文字，而是抽 "什么场景 / 什么信号 / 什么推荐 / 什么反例"）。
+3. 写「适用条件」「反例 / 不适用」「模式描述」「决策矩阵」。
+4. 反模式自查：是否只是 lesson 复制粘贴 / 缺反例 / 缺适用条件 / 与 reference 冲突未标。
+5. 在 `patterns-skill.md` 末尾追加，编号连续。
+6. 回到每条源 lesson 加 `Promoted to: P-NNNN`。
+
+### L2 → L3
+1. 定位要修改的 reference 文件 + 段落（pattern 影响的就是这里）。
+2. 反例排查：在所有 active lesson / pattern 中检索是否有反例 → 有反例则不升级。
+3. 起草 PR：reference 修改 + 关联 P-NNNN + 关联 L-NNNN。
+4. PR 合并后回写 pattern 卡片状态为 `promoted-to-reference`。
+5. **不删 lesson / pattern**（保留考古回溯）。
+
+## 引用的 references
+- references/patterns-skill.md（pattern 模板、promotion 流程）
+- references/lessons.md（promotion 触发条件、L1 → L2 流程）
+- SKILL.md「Knowhow 沉淀规则」
+
+## 输出格式
+- L1 → L2：完整 pattern 卡片 + 源 lesson 更新 diff
+- L2 → L3：PR 草稿（标题、描述、reference 修改 diff）
+
+## 完成判定
+- [ ] 升级触发条件已显式列出（命中哪条）
+- [ ] 反例排查已做
+- [ ] 源条目状态已更新（lesson 加 Promoted to / pattern 加 promoted-to-reference）
+- [ ] 编号连续
+- [ ] 不删除任何源条目
+```
+
 ### spike-start.md
 
 ```md
@@ -484,6 +602,8 @@ docs/prompts/
 | update-active-context | 会话结束 / 重要进展后 |
 | refactor-safely | 重构 / 清理 / 重命名 |
 | debug-incident | 挂了 / 错了 / 救火 |
+| capture-lesson | 用户说"不对/应该是/错了/我之前是/不要 X 要 Y" |
+| promote-pattern | 同主题 lesson ≥ 2 / 用户说"这是通用模式" / pattern 影响 reference 核心结论 |
 ```
 
 ## 与 SKILL.md 决策树的关系

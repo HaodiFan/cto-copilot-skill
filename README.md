@@ -4,7 +4,7 @@
 
 ## Status
 
-- Version: 0.4.1
+- Version: 0.5.0
 - Stage: active
 
 ## Skill 内容
@@ -24,7 +24,9 @@
   - `references/checklists.md` —— 验证、需求完备性、新项目 / Feature / Bug fix / Refactor / PR Readiness、Constitution 红线触发处理、Memory Bank hygiene、反模式
   - `references/inheriting-projects.md` —— 接手已有项目的盘点流程（含 §1.0 自动识别）、现状报告模板、文档补齐顺序
   - `references/memory-bank-guide.md` —— AI agent 跨会话上下文的"指针 + 增量"模式（brief / tech-context / patterns / active-context）
-  - `references/prompts-guide.md` —— 可复用 prompt 模板（scaffold / handover-audit / new-feature / new-design-doc / new-adr / pre-pr / update-active-context / refactor-safely / debug-incident）
+  - `references/prompts-guide.md` —— 13 份可复用 prompt 模板（scaffold / spike-start / handover-audit / new-feature / scenario-routing / new-design-doc / new-adr / pre-pr / update-active-context / refactor-safely / debug-incident / **capture-lesson** / **promote-pattern**）
+  - `references/lessons.md` —— **Skill 级 L1 纠偏日志**（每次用户纠正方案 agent 主动追加；连续编号 L-NNNN）
+  - `references/patterns-skill.md` —— **Skill 级 L2 验证过的 pattern 库**（来自 lessons 的合并；连续编号 P-NNNN）
 
 ## 主要能力
 
@@ -37,6 +39,35 @@
 - AI agent 跨会话上下文（Memory Bank）+ 可复用动作模板（Prompts）
 - 接手项目专用盘点流程（含自动识别），默认尊重现状；支持 legacy / pre-vibecoding 文档迁移
 - 7 字段「下一步」统一输出格式
+
+## v0.5.0 新增（Skill 自我进化机制）
+
+让 skill 真正能从用户纠偏中学习。每次用户说"不对/应该是/错了"，agent 主动捕获结构化 lesson；多条同主题 lesson 合并成 pattern；pattern 验证够了再升级到 reference。三层 knowhow 模型，每层都有连续编号、回溯链、反模式护栏。
+
+### 新增机制
+
+- **三层 knowhow 模型**：
+  - L1 `references/lessons.md`：单条纠偏追加日志，agent 自己加，立即生效。编号 L-NNNN。
+  - L2 `references/patterns-skill.md`：lessons 合并验证后的 pattern 库。编号 P-NNNN。
+  - L3 Reference 升级：pattern 影响 reference 核心结论时，owner 开 PR 修改。
+- **触发信号清单**：用户回复包含「不对/应该是/错了/我之前是/不要 X 要 Y/这一步不该现在做」等 5 类信号 → agent **必须**提议捕获 lesson。SKILL.md 与 lessons.md 都有完整词表。
+- **Tag 词表**：覆盖阶段（stage-0–9 / P / I）、形态（form-*）、场景（scenario-*）、架构维度（arch-*）、工程实践（practice-*）、治理（gov-*）。多标签可组合检索。
+- **Promotion 流程**：L1 → L2 触发条件（同主题 ≥ 2 条 / 用户确认通用）；L2 → L3 触发条件（与 reference 冲突 / 多项目验证 / ≥ 3 次引用且无反例）。每次 promotion 留下完整回溯链。
+- **反模式护栏**：拒绝个人偏好、reference 重复内容、项目特定写法、敏感数据、多意图、缺适用条件的 lesson；拒绝缺反例 / 与 reference 冲突未标的 pattern。
+
+### 集成点
+
+- `SKILL.md` 加「Knowhow 沉淀规则」一节：会话开始检索 lessons / patterns，会话进行中识别捕获信号，会话结束时捕获 + 提议 promotion。
+- `prompts-guide.md` 扩到 13 份基线模板：新增 `capture-lesson` 与 `promote-pattern`。
+- `checklists.md` 加「Skill Knowhow Hygiene Checklist」：会话开始 / 进行中 / 结束三段自检。
+- `stage-playbook.md` Stage 6 / 8 / 9 收尾步骤都加上「检查是否要 capture lesson」。
+- `spec-templates.md` 路由表新增 lessons / patterns-skill 条目。
+
+### 版本号
+
+- `SKILL.md` `0.4.1` → `0.5.0`（新增机制层）
+- `agents/openai.yaml` 同步 `0.5.0`
+- `README.md` Version `0.5.0`
 
 ## v0.4.1 新增（fact-check + 可增长性优化）
 

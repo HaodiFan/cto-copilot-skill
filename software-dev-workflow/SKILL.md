@@ -1,7 +1,7 @@
 ---
 name: software-dev-workflow
-description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、业务场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、legacy 项目治理、POC/spike、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、PR/release readiness、RPA/数据采集、OCR/文档智能、视觉质检、LLM 生产链路、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。Skill 自带三层 knowhow 沉淀机制（lessons / patterns / reference 升级），用户每次纠偏都会被结构化捕获，让 skill 跨会话自我进化。
-version: 0.5.0
+description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、业务场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、legacy 项目治理、POC/spike、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、代码审查、PR review、实现方法评审、PR/release readiness、RPA/数据采集、OCR/文档智能、视觉质检、LLM 生产链路、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。Skill 自带三层 knowhow 沉淀机制（lessons / patterns / reference 升级），用户每次纠偏都会被结构化捕获，让 skill 跨会话自我进化。
+version: 0.5.1
 ---
 
 # 软件开发工作流
@@ -55,7 +55,7 @@ version: 0.5.0
 ### 3. 是 review、救火、"下一步做什么"吗？
 
 - 信号：用户问"现在该干嘛"、"帮我 review 计划"、"项目很乱"、"继续开发"。
-- 行动：读取 `references/stage-playbook.md` 与 `references/checklists.md`。
+- 行动：读取 `references/stage-playbook.md` 与 `references/checklists.md`。如果是代码审查、PR review、实现方法评审，再读取 `references/code-review-standards.md`。
 - 输出：使用 7 字段模板。
 
 ### 4. 是 POC / Spike / 临时验证吗？
@@ -174,6 +174,7 @@ Skill 有三层 knowhow，agent 必须主动维护：
 - `references/templates-governance.md`：CONSTITUTION（红线）/ ADR / Folder Declaration / glossary / changelog 模板。
 - `references/templates-specs.md`：Requirements / Design Doc（含 backlog/active/done lifecycle）/ Layout Spec / PR Body 模板。
 - `references/checklists.md`：验证门禁、需求完备性、PR readiness、反模式和场景 checklist。
+- `references/code-review-standards.md`：团队代码审查口径，覆盖代码坏味道、潜在问题与测试重点、密钥/硬编码风险、真人测试真源。
 - `references/inheriting-projects.md`：接手已有项目的盘点流程（含 §1.0 自动识别）、现状报告模板、文档补齐顺序。
 - `references/memory-bank-guide.md`：AI agent 跨会话上下文的"指针 + 增量"模式（brief / tech-context / patterns / active-context）。
 - `references/prompts-guide.md`：可复用 prompt 模板（scaffold / spike-start / handover-audit / new-feature / scenario-routing / new-design-doc / new-adr / pre-pr / update-active-context / refactor-safely / debug-incident / capture-lesson / promote-pattern）。

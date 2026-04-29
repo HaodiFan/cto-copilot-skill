@@ -4,7 +4,7 @@
 
 ## Status
 
-- Version: 0.5.0
+- Version: 0.5.1
 - Stage: active
 
 ## Skill 内容
@@ -22,6 +22,7 @@
   - `references/templates-governance.md` —— **CONSTITUTION（红线）**、**ADR（决策记录）**、Folder Declaration、glossary、changelog 模板
   - `references/templates-specs.md` —— Requirements Doc、Design Doc（含 backlog/active/done lifecycle）、Layout Spec、PR Body 模板
   - `references/checklists.md` —— 验证、需求完备性、新项目 / Feature / Bug fix / Refactor / PR Readiness、Constitution 红线触发处理、Memory Bank hygiene、反模式
+  - `references/code-review-standards.md` —— 代码审查口径：代码坏味道、潜在行为风险、测试重点、密钥/硬编码风险、真人测试真源
   - `references/inheriting-projects.md` —— 接手已有项目的盘点流程（含 §1.0 自动识别）、现状报告模板、文档补齐顺序
   - `references/memory-bank-guide.md` —— AI agent 跨会话上下文的"指针 + 增量"模式（brief / tech-context / patterns / active-context）
   - `references/prompts-guide.md` —— 13 份可复用 prompt 模板（scaffold / spike-start / handover-audit / new-feature / scenario-routing / new-design-doc / new-adr / pre-pr / update-active-context / refactor-safely / debug-incident / **capture-lesson** / **promote-pattern**）
@@ -38,7 +39,20 @@
 - 项目红线（CONSTITUTION.md）+ 决策记录（ADR）+ 设计文档生命周期（backlog/active/done）三件套
 - AI agent 跨会话上下文（Memory Bank）+ 可复用动作模板（Prompts）
 - 接手项目专用盘点流程（含自动识别），默认尊重现状；支持 legacy / pre-vibecoding 文档迁移
+- 代码审查口径：优先检查《重构》坏味道、潜在行为风险与测试重点、secret / hardcode 风险，并保留真人验收为业务真源
 - 7 字段「下一步」统一输出格式
+
+## v0.5.1 新增（代码审查标准）
+
+- 新增 `references/code-review-standards.md`，把代码审查优先级明确为：代码优雅与坏味道、潜在问题与测试重点、密钥/密码/硬编码风险。
+- Review / PR review / 实现方法评审场景会额外读取代码审查标准，避免只检查编译错误或把产品约定误报成缺陷。
+- PR Readiness checklist 增加 code review standards 自检项。
+
+### 版本号
+
+- `SKILL.md` `0.5.0` → `0.5.1`
+- `agents/openai.yaml` 同步 `0.5.1`
+- `README.md` Version `0.5.1`
 
 ## v0.5.0 新增（Skill 自我进化机制）
 

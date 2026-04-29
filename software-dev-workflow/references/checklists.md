@@ -280,6 +280,7 @@ npm run build
 - [ ] Diff 聚焦一个 topic。
 - [ ] 没有无关格式化噪音。
 - [ ] 没有提交生成文件或运行时文件。
+- [ ] 已按 `references/code-review-standards.md` 检查代码坏味道、潜在行为风险、密钥/硬编码风险。
 - [ ] **`CONSTITUTION.md` 红线 0 触发**（或已走豁免流程并在 PR body 注明）。
 - [ ] Design doc 已关联，状态正确（feature 完成时已从 `active/` 移到 `done/` 并回填 `Validation Results`）。
 - [ ] requirements doc、架构文档已同步。

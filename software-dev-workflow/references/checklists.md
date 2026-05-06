@@ -109,6 +109,7 @@ npm run build
 - [ ] `ARCHITECTURE.md` 存在，记录所有关键架构决策（交叉引用 ADR）。
 - [ ] `DEVELOPMENT.md` 存在。
 - [ ] `BRANCHING.md` 存在并已生效（团队已知）。
+- [ ] `BRANCHING.md` 已写明 checkout/worktree 策略：何时必须 worktree、何时可直接开发、脏工作区如何处理。
 - [ ] `CONSTITUTION.md` 存在（红线 v0.1）。
 - [ ] `AGENTS.md` 存在（明示先读 active-context + Constitution）。
 - [ ] `docs/requirements/requirements-v0.0.1.md` 存在（来自用户）。
@@ -253,6 +254,7 @@ npm run build
 - [ ] 已判断是否需要 changelog。
 - [ ] 实现已拆成 vertical slices。
 - [ ] 多步 feature 已按 `execution-pipeline.md` 输出 implementation plan。
+- [ ] 已按 `execution-pipeline.md` 判断 checkout/worktree；多 agent / 多任务并行已使用独立 worktree 和 disjoint write set。
 - [ ] 每个 slice 已标 validation gate 和命中的 review roles。
 - [ ] `docs/memory-bank/active-context.md` 已写当前焦点（agent 协作项目）。
 
@@ -262,6 +264,7 @@ npm run build
 
 - [ ] Goal 是用户可观察行为，不是技术动作。
 - [ ] Source docs 已链接 requirements / design doc / ADR / layout spec（如有）。
+- [ ] Checkout / worktree 决策已说明；如并行开发，写明每个 worktree / agent 的写入范围。
 - [ ] Scope / Non-goals 明确。
 - [ ] File Map 列出新建/修改文件及责任边界。
 - [ ] Vertical slices 可单独验证，不只是“后端/前端/测试”分层。
@@ -326,7 +329,9 @@ npm run build
 ## PR Readiness
 
 - [ ] Diff 聚焦一个 topic。
+- [ ] 当前 checkout/worktree 决策符合 `BRANCHING.md`；单 PR follow-up 或小修直接开发时，当前分支就是目标分支。
 - [ ] 没有无关格式化噪音。
+- [ ] 没有混入用户未提交改动；如保留无关脏文件，PR body 或收尾说明已列出。
 - [ ] 没有提交生成文件或运行时文件。
 - [ ] 已按 `references/code-review-standards.md` 检查代码坏味道、潜在行为风险、密钥/硬编码风险。
 - [ ] 已按 `references/execution-pipeline.md` 跑完命中的 Review Pipeline roles。
@@ -421,6 +426,8 @@ agent / 开发者发现自己的实现**会**触线时：
 - 未明确决策就把外部平台当产品数据库。
 - 把 runtime data 提交进 repo。
 - 一个分支混合 feature、refactor、docs、依赖升级、格式化。
+- 在脏工作区直接开写，或擅自 stash/revert 用户改动。
+- 多 agent / 多任务共写一个 checkout，导致 diff 互相覆盖。
 - AI 生成代码后不验证。
 - PR 不写风险和验证方式。
 - 接手项目立刻"重构整理"，破坏现有约定。

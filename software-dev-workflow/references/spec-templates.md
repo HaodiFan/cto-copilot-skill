@@ -56,7 +56,7 @@ docs/
 | Design Doc | `templates-specs.md` |
 | Layout Spec | `templates-specs.md` |
 | PR Body | `templates-specs.md` |
-| Implementation Plan / Review Pipeline | `execution-pipeline.md` |
+| Checkout / Worktree / Implementation Plan / Review Pipeline | `execution-pipeline.md` |
 | Memory Bank | `memory-bank-guide.md` |
 | Prompts 操作手册 | `prompts-guide.md` |
 | Skill 级 L1 纠偏日志 | `lessons.md` |

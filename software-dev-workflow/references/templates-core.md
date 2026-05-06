@@ -163,6 +163,30 @@
 
 不要混合 feature、refactor、docs、依赖升级和格式化。
 
+## Checkout / Worktree Rules
+
+编辑前先运行 `git status --short --branch`，判断当前 checkout 是否适合承载本任务。
+
+必须使用独立 worktree：
+
+- 从 `main` / `dev` / `release` 等共享分支开始新 feature、bug fix、refactor、迁移或 spike。
+- 当前 checkout 有未提交改动，且与本任务可能重叠、来源不明或会污染 PR diff。
+- 多 agent / 多任务并行，每个任务或 agent 使用独立 worktree，并声明不重叠的写入范围。
+- 高风险改动：跨模块重构、数据迁移、权限/支付/状态机/公共 API/构建系统/依赖升级。
+- 需要保留当前现场用于复现、对比或 review。
+
+允许当前 checkout 直接开发：
+
+- 当前分支已经是目标任务或目标 PR 分支。
+- 工作区干净，或只有与本任务明确相关的未提交改动。
+- 小修、文档、注释、配置小改、单 PR review follow-up，且没有并行任务。
+
+脏工作区规则：
+
+- 不得擅自 `reset` / `checkout --` / `clean` / `stash` 用户改动。
+- 无关且不重叠的改动可以保留，但收尾说明未触碰。
+- 重叠、来源不清或影响 diff 时，先停下，让 owner 选择提交、手动 stash、新建 worktree 或授权 agent stash。
+
 ## Commit Rules
 
 优先 Conventional Commits：

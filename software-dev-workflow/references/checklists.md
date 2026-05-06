@@ -252,7 +252,55 @@ npm run build
 - [ ] 有测试或验证计划。
 - [ ] 已判断是否需要 changelog。
 - [ ] 实现已拆成 vertical slices。
+- [ ] 多步 feature 已按 `execution-pipeline.md` 输出 implementation plan。
+- [ ] 每个 slice 已标 validation gate 和命中的 review roles。
 - [ ] `docs/memory-bank/active-context.md` 已写当前焦点（agent 协作项目）。
+
+---
+
+## Implementation Plan Checklist（Stage 5）
+
+- [ ] Goal 是用户可观察行为，不是技术动作。
+- [ ] Source docs 已链接 requirements / design doc / ADR / layout spec（如有）。
+- [ ] Scope / Non-goals 明确。
+- [ ] File Map 列出新建/修改文件及责任边界。
+- [ ] Vertical slices 可单独验证，不只是“后端/前端/测试”分层。
+- [ ] 每个 slice 有 validation gate：后端/API/单元/集成/契约测试命令、样本、人工验收或 replay/eval。
+- [ ] 每个 slice 标出需要的 review roles（Product / Eng / Design / DX / Code / QA / Security / Release）。
+- [ ] Rollback / fallback 已说明。
+- [ ] 没有 TODO / TBD / “适当处理边界情况” 这类占位。
+
+---
+
+## Review Pipeline Checklist（Stage 7-8）
+
+- [ ] Product / CEO Review：目标、P0、非目标和范围没有漂移（命中产品/范围变化时）。
+- [ ] Eng / Architecture Review：owning layer、ADR、数据流、状态机、权限边界已检查（命中架构变化时）。
+- [ ] Design Review：DESIGN.md、layout spec、响应式、可访问性已检查（命中 UI 时）。
+- [ ] DX Review：API / CLI / SDK / docs 的首次使用路径和错误信息已检查（命中开发者体验时）。
+- [ ] Code Review：已按 `code-review-standards.md` 检查坏味道、行为风险、secret/hardcode。
+- [ ] QA Review：优先后端/API/service 自测；端到端用户流、失败态和回归路径有证据。
+- [ ] Security / Compliance Review：鉴权、PII、secret、平台 ToS、自动化授权边界已检查（命中高风险时）。
+- [ ] Release Review：PR body、CI、changelog、迁移顺序、回滚方式已检查（准备发布时）。
+
+---
+
+## Browser QA Checklist（显式触发）
+
+默认不要用浏览器模拟代替后端自测。只有用户明确要求，或任务本身就是浏览器/RPA/前端交互能力，或问题只能在真实浏览器复现时，才跑本 checklist。
+
+触发前先确认：
+
+- [ ] 已优先运行后端/API/service/contract/fixture/replay 等最小相关验证，或说明为什么无法运行。
+- [ ] 浏览器模拟的触发原因已写明：用户要求 / 产品能力本身 / 浏览器特有 bug / release gate。
+
+- [ ] 已记录目标 URL / 本地页面、viewport、登录态、测试账号或脱敏身份。
+- [ ] 核心用户流已走通：打开、填写、提交、刷新、错误态、权限态。
+- [ ] console error、network failure、loading/empty/error state 已检查。
+- [ ] 已保存截图，或说明无法截图的原因。
+- [ ] 响应式页面至少检查一个窄屏 viewport。
+- [ ] RPA / 电商后台已保留截图、HTML 或 raw payload 证据层。
+- [ ] 登录失效、验证码、限流、页面改版有失败态和人工接管说明。
 
 ---
 
@@ -281,6 +329,9 @@ npm run build
 - [ ] 没有无关格式化噪音。
 - [ ] 没有提交生成文件或运行时文件。
 - [ ] 已按 `references/code-review-standards.md` 检查代码坏味道、潜在行为风险、密钥/硬编码风险。
+- [ ] 已按 `references/execution-pipeline.md` 跑完命中的 Review Pipeline roles。
+- [ ] 已优先运行后端/API/service/contract/fixture/replay 等最小相关验证。
+- [ ] 浏览器模拟仅在用户要求、产品能力本身、浏览器特有 bug 或 release gate 命中时运行；未命中则无需 Browser QA 证据。
 - [ ] **`CONSTITUTION.md` 红线 0 触发**（或已走豁免流程并在 PR body 注明）。
 - [ ] Design doc 已关联，状态正确（feature 完成时已从 `active/` 移到 `done/` 并回填 `Validation Results`）。
 - [ ] requirements doc、架构文档已同步。

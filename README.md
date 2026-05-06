@@ -4,7 +4,7 @@
 
 ## Status
 
-- Version: 0.5.1
+- Version: 0.6.0
 - Stage: active
 
 ## Skill 内容
@@ -13,6 +13,7 @@
 - 入口：`software-dev-workflow/SKILL.md`
 - References：
   - `references/stage-playbook.md` —— Stage P 与 Stage 0–9 阶段判断与下一步动作（Stage I「接手盘点」单独成文）
+  - `references/execution-pipeline.md` —— Stage 5–8 的硬 gate、implementation plan 质量标准、角色化 review pipeline、后端优先验证、browser QA 触发边界与 learn 边界
   - `references/scenario-playbooks.md` —— RPA/数据采集、OCR/文档智能、视觉质检、数据治理、LLM 生产链路、浏览器自动化、POC/spike 的场景化 playbook
   - `references/project-blueprints.md` —— 5 种项目形态的 starter 目录与首次提交清单
   - `references/architecture-cases.md` —— 通用架构选型 case 库（20 大类，深度档：定位 / 适用 / 反例 / 代价 / 退出成本 / 决策信号 / worked example / 踩坑 / 决策矩阵）
@@ -37,10 +38,26 @@
 - 支持 Stage 0–4 的真实 8 步顺序：folders → branching → architecture+constitution+ADR → requirements+design lifecycle → layout → components → memory-bank+prompts → AGENTS.md
 - 20 大类通用架构决策 + 11 大类 AI 架构决策的可查 case 库
 - 项目红线（CONSTITUTION.md）+ 决策记录（ADR）+ 设计文档生命周期（backlog/active/done）三件套
+- 执行管线：多步 feature 必须有 implementation plan，Stage 7/8 按角色化 Review Pipeline 与后端优先验证收口
 - AI agent 跨会话上下文（Memory Bank）+ 可复用动作模板（Prompts）
 - 接手项目专用盘点流程（含自动识别），默认尊重现状；支持 legacy / pre-vibecoding 文档迁移
 - 代码审查口径：优先检查《重构》坏味道、潜在行为风险与测试重点、secret / hardcode 风险，并保留真人验收为业务真源
 - 7 字段「下一步」统一输出格式
+
+## v0.6.0 新增（执行管线 + Review Pipeline）
+
+- 新增 `references/execution-pipeline.md`，把 Stage 5–8 串成 Requirements → Spec → Architecture → Implementation Plan → Vertical Slice → Review Pipeline → QA → Release → Learn。
+- 引入硬 gate：Requirements / Design / Architecture / Plan / Implementation / Review / Validation / Learn。POC 和事故救火有明确例外，但必须补证据。
+- 引入 Implementation Plan 质量标准：目标、source docs、file map、vertical slices、validation gates、review roles、rollback、learn updates，禁止 TODO/TBD 式计划。
+- 引入角色化 Review Pipeline：Product / Eng / Design / DX / Code / QA / Security / Release，按变更类型选择需要的 review 视角。
+- 测试默认后端/API/service 自测优先；浏览器模拟只在用户明确要求、任务本身是浏览器/RPA能力、浏览器特有 bug 或 release gate 命中时运行。
+- 明确 Learn 边界：项目级 memory-bank、Skill L1 lessons、Skill L2 patterns、reference canon 各写什么，避免双份真相源。
+
+### 版本号
+
+- `SKILL.md` `0.5.1` → `0.6.0`
+- `agents/openai.yaml` 同步 `0.6.0`
+- `README.md` Version `0.6.0`
 
 ## v0.5.1 新增（代码审查标准）
 

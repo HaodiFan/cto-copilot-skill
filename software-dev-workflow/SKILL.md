@@ -1,7 +1,7 @@
 ---
 name: software-dev-workflow
-description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、业务场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、legacy 项目治理、POC/spike、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、代码审查、PR review、实现方法评审、PR/release readiness、RPA/数据采集、OCR/文档智能、视觉质检、LLM 生产链路、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。Skill 自带三层 knowhow 沉淀机制（lessons / patterns / reference 升级），用户每次纠偏都会被结构化捕获，让 skill 跨会话自我进化。
-version: 0.5.1
+description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、业务场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、legacy 项目治理、POC/spike、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、执行管线、角色化 review pipeline、后端优先验证、浏览器 QA 触发边界、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、代码审查、PR review、实现方法评审、PR/release readiness、RPA/数据采集、OCR/文档智能、视觉质检、LLM 生产链路、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。Skill 自带三层 knowhow 沉淀机制（lessons / patterns / reference 升级），用户每次纠偏都会被结构化捕获，让 skill 跨会话自我进化。
+version: 0.6.0
 ---
 
 # 软件开发工作流
@@ -43,13 +43,13 @@ version: 0.5.1
 ### 1. 是实现/修 bug/迁移任务吗？
 
 - 信号：用户要求 build、fix、add、wire、migrate、implement、写代码、接接口。
-- 行动：读取 `references/stage-playbook.md` Stage 6 与 `references/checklists.md`。如果命中 RPA / OCR / 视觉质检 / LLM 生产链路 / 浏览器自动化，额外读取 `references/scenario-playbooks.md`。
+- 行动：读取 `references/stage-playbook.md` Stage 6、`references/checklists.md` 与 `references/execution-pipeline.md`。如果命中 RPA / OCR / 视觉质检 / LLM 生产链路 / 浏览器自动化，额外读取 `references/scenario-playbooks.md`。
 - 规则：编辑前先检查 repo；如改动会触动架构边界、状态机、权限、存储、公共 API 或 UI 模式，先更新 spec 再写代码。
 
 ### 2. 是已有项目的新功能规划吗？
 
 - 信号：新增 feature、页面、API、workflow、agent 能力、集成、后台任务，但还没开写。
-- 行动：读取 `references/stage-playbook.md` Stage 5 与 `references/spec-templates.md`。如果功能属于采集、OCR、文档智能、视觉质检、数据治理或 LLM 生产链路，额外读取 `references/scenario-playbooks.md`。
+- 行动：读取 `references/stage-playbook.md` Stage 5、`references/spec-templates.md` 与 `references/execution-pipeline.md`。如果功能属于采集、OCR、文档智能、视觉质检、数据治理或 LLM 生产链路，额外读取 `references/scenario-playbooks.md`。
 - 规则：先确认是否已有关联 design doc；没有就先创建或补齐，除非用户明确要 quick spike。
 
 ### 3. 是 review、救火、"下一步做什么"吗？
@@ -99,10 +99,10 @@ version: 0.5.1
 | 2 Spec | PRD/design doc | `spec-templates.md` | 带验收标准的 design doc |
 | 3 架构 | 技术栈、边界、真相源 | `architecture-cases.md`、`architecture-cases-ai.md` | 形态选定 + 关键架构决策清单 |
 | 4 脚手架 | 新 repo、首次提交 | `project-blueprints.md`、`spec-templates.md` | starter tree + 分支规范 + 首次提交清单 |
-| 5 Feature 规划 | 缺拆解 | `stage-playbook.md` | milestone 与影响文件 |
-| 6 实现 | 代码变更 | `checklists.md` | 最小切片 + 文档同步 |
-| 7 验证 | 测试、QA | `checklists.md` | 验证矩阵与风险关闭 |
-| 8 PR/发布 | 合并、发版 | `checklists.md` | PR 内容、changelog、release gate |
+| 5 Feature 规划 | 缺拆解 | `stage-playbook.md`、`execution-pipeline.md` | implementation plan + review roles |
+| 6 实现 | 代码变更 | `checklists.md`、`execution-pipeline.md` | 最小切片 + validation gate |
+| 7 验证 | 测试、QA | `checklists.md`、`execution-pipeline.md` | Review Pipeline + 后端优先验证 |
+| 8 PR/发布 | 合并、发版 | `checklists.md`、`execution-pipeline.md` | PR 内容、release gate、learn 收口 |
 | 9 维护 | 重构、清理 | `stage-playbook.md` | 行为保持 + 边界清晰 |
 
 ## 项目形态路由
@@ -146,7 +146,9 @@ Skill 有三层 knowhow，agent 必须主动维护：
 - **Memory Bank 是 agent 跨会话上下文**（`docs/memory-bank/`）：开工先读 `active-context.md`，会话结束更新；详见 `memory-bank-guide.md`。
 - **Design doc 有生命周期**：`backlog/ → active/ → done/`，状态由目录位置体现，AGENTS 默认只读 `active/`。
 - 一个 topic 一个分支，避免混入无关变更。
+- 多步 feature 先有 implementation plan；计划必须包含文件边界、vertical slices、validation gates 和命中的 review roles（详见 `execution-pipeline.md`）。
 - 优先做最小 vertical slice（端到端闭环），不做大面积半成品。
+- 测试默认后端/API/service 自测优先；除非用户要求、任务本身是浏览器/RPA能力、或问题只能在真实浏览器复现，不主动跑浏览器模拟。
 - 信息不足时，优先做可逆的最小假设并明确说明；只有错误假设代价高时才提问。
 - 接手项目默认尊重现状，不擅自重构；缺文档先补文档。
 - POC/spike 默认轻量治理，但命中升级触发条件（多人接手、真实客户数据、持续运行、生产化、存储/权限/API/后台任务）后必须升级到正式项目流程。
@@ -165,6 +167,7 @@ Skill 有三层 knowhow，agent 必须主动维护：
 ## References
 
 - `references/stage-playbook.md`：按阶段判断信号、产物和下一步动作。
+- `references/execution-pipeline.md`：Stage 5-8 的硬 gate、implementation plan 质量标准、角色化 review pipeline、后端优先验证、browser QA 触发边界和 learn 边界。
 - `references/scenario-playbooks.md`：按业务自动化场景补充技术选型、最小切片、验证门禁和反模式（RPA/OCR/视觉/数据/LLM/浏览器自动化/POC）。
 - `references/project-blueprints.md`：5 种项目形态的 starter 目录结构与首次提交清单。
 - `references/architecture-cases.md`：通用架构选型 case 库（Repo / 渲染 / 后端 / 数据 / 部署 / 鉴权 / 异步 / 可观测性 / 业务自动化 / 客户端 / 状态管理 / 测试 / CI/CD / 配置 / i18n / 合规 / 性能等 20 大类）。

@@ -30,6 +30,8 @@ docs/
 │   └── active-context.md
 ├── prompts/
 │   └── README.md
+├── plans/
+│   └── implementation-plan-<topic>.md
 └── governance/
     ├── folder-declaration-v0.md
     ├── terminology-glossary.md
@@ -54,6 +56,7 @@ docs/
 | Design Doc | `templates-specs.md` |
 | Layout Spec | `templates-specs.md` |
 | PR Body | `templates-specs.md` |
+| Implementation Plan / Review Pipeline | `execution-pipeline.md` |
 | Memory Bank | `memory-bank-guide.md` |
 | Prompts 操作手册 | `prompts-guide.md` |
 | Skill 级 L1 纠偏日志 | `lessons.md` |

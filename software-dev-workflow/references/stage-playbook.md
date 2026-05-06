@@ -4,7 +4,7 @@
 
 阶段 I（接手盘点）见 `inheriting-projects.md`（含 §1.0 自动识别 + §1.1–1.5 人工盘点）。本文件覆盖 Stage P 与 Stage 0–9。
 
-> 跨阶段产物索引：`CONSTITUTION.md`（Stage 3 起草、长期维护）；ADR `docs/decisions/ADR-NNNN-*.md`（Stage 3 起步、每个关键决策）；Memory Bank `docs/memory-bank/`（Stage 4 初始化、Stage 6/8 持续更新）；Prompts `docs/prompts/`（Stage 4 初始化）；Design doc lifecycle `docs/design/{backlog,active,done}/`（Stage 4 建立、Stage 5–8 流转）。详见 `spec-templates.md`、`memory-bank-guide.md`、`prompts-guide.md`。
+> 跨阶段产物索引：`CONSTITUTION.md`（Stage 3 起草、长期维护）；ADR `docs/decisions/ADR-NNNN-*.md`（Stage 3 起步、每个关键决策）；Memory Bank `docs/memory-bank/`（Stage 4 初始化、Stage 6/8 持续更新）；Prompts `docs/prompts/`（Stage 4 初始化）；Design doc lifecycle `docs/design/{backlog,active,done}/`（Stage 4 建立、Stage 5–8 流转）；Implementation Plan（Stage 5，可写入 design doc Milestones 或单独 `docs/plans/`）。详见 `spec-templates.md`、`memory-bank-guide.md`、`prompts-guide.md`、`execution-pipeline.md`。
 
 ---
 
@@ -181,8 +181,10 @@ P0 不做 <non-goal>。
 下一步：
 
 - 确认关联 design doc。
-- 拆成能产生可观察行为的 vertical slices。
-- 标出影响目录、数据模型变化、API 变化、UI 变化、测试、文档。
+- 读取 `execution-pipeline.md` §2，输出 implementation plan。
+- 拆成能产生可观察行为的 vertical slices，并标出每个 slice 的 validation gate。
+- 标出影响目录、数据模型变化、API 变化、UI 变化、测试、文档和 review roles。
+- 多步 feature 没有 plan 不进入 Stage 6；单点小改、POC、事故救火可走例外，但要说明原因。
 
 产物格式：
 
@@ -196,6 +198,7 @@ Milestone 4: tests and docs
 停止条件：
 
 - 每个 milestone 都有清晰 validation gate。
+- 命中的 Review Pipeline roles 已标出（Product / Eng / Design / DX / Code / QA / Security / Release）。
 
 ---
 
@@ -209,7 +212,8 @@ Milestone 4: tests and docs
 
 - 编辑前先检查 repo。
 - 读取 canonical docs（含 `CONSTITUTION.md`、`docs/memory-bank/active-context.md`、`docs/memory-bank/patterns.md`）和现有实现模式。
-- 实现最小 vertical slice。
+- 多步 feature 先读取 implementation plan；没有 plan 时退回 Stage 5。
+- 按 `execution-pipeline.md` 的 slice 执行，完成一个可观察行为再进入下一个。
 - 保持在已声明架构边界内 + 不触 `CONSTITUTION.md` 红线。
 - 如需偏离 spec，先更新 spec。
 - 触发红线 → 立刻停下，提示用户三种路径（改方案规避 / 提议放宽红线 / 申请临时豁免），由 owner 决策。
@@ -241,6 +245,7 @@ Milestone 4: tests and docs
 
 - 把变更映射到检查：typecheck、unit、integration、migration、e2e、visual、smoke。
 - 先跑最窄可靠检查。
+- 按 `execution-pipeline.md` §3 选择 Review Pipeline roles；测试默认优先后端/API/service 自测。除非用户要求、任务本身是浏览器/RPA能力、或问题只能在真实浏览器复现，不主动跑浏览器模拟。
 - bug fix 优先补 regression test。
 - 记录验证缺口。
 
@@ -259,6 +264,7 @@ Milestone 4: tests and docs
 下一步：
 
 - 确保 design doc 已关联（位于 `docs/design/active/`）。
+- 对照 `execution-pipeline.md` 的 Review Gate、Validation Gate、Learn Gate 收口。
 - 重要变更已更新 docs/changelog。
 - `git diff --check` 通过。
 - `CONSTITUTION.md` 红线 0 触发（或已走豁免流程）。

@@ -188,7 +188,7 @@ docs/prompts/
 
 ## 我会交付
 - design doc（如缺失）
-- vertical slice 拆解（milestones）
+- implementation plan（vertical slices + validation gates + review roles）
 - 影响目录与文件清单
 - 测试与 docs 计划
 - Constitution 与 patterns.md 检查（不违反红线、走项目模式）
@@ -197,12 +197,13 @@ docs/prompts/
 1. 校验关联 requirements 是否完备（checklists.md 完备性 checklist）
 2. 若无 design doc，按 `spec-templates.md` → `templates-specs.md` 创建 v0.0.1
 3. UI 类：layout spec → 组件选择查 DESIGN.md
-4. 拆 vertical slices，标 validation gate
+4. 读取 `execution-pipeline.md`，输出 implementation plan：file map、vertical slices、validation gates、review roles
 5. 检查 Constitution 红线 + patterns.md 模式
 6. 更新 active-context.md
 
 ## 引用的 references
 - references/stage-playbook.md（Stage 5）
+- references/execution-pipeline.md（Implementation Plan + Review Pipeline）
 - references/spec-templates.md（模板索引）
 - references/templates-specs.md（Design Doc / PR Body）
 - references/checklists.md（Feature Checklist）
@@ -214,6 +215,7 @@ docs/prompts/
 ## 完成判定
 - [ ] 已有 design doc（status: active）
 - [ ] vertical slice 切完，每个有 validation gate
+- [ ] 命中的 review roles 已标出
 - [ ] active-context.md 更新
 ```
 
@@ -279,13 +281,15 @@ docs/prompts/
 
 ## 步骤
 1. 跑 PR Readiness checklist
-2. 跑 Constitution 红线检查
-3. 同步 design doc / requirements / DESIGN（UI）/ ARCHITECTURE（架构改动）
-4. 更新 active-context.md：标 PR 状态
-5. 输出 PR body（`spec-templates.md` → `templates-specs.md` 模板）
+2. 跑 `execution-pipeline.md` 的 Review Gate / Validation Gate / Learn Gate；验证默认后端/API/service 自测优先，浏览器模拟只在显式触发时运行
+3. 跑 Constitution 红线检查
+4. 同步 design doc / requirements / DESIGN（UI）/ ARCHITECTURE（架构改动）
+5. 更新 active-context.md：标 PR 状态
+6. 输出 PR body（`spec-templates.md` → `templates-specs.md` 模板）
 
 ## 引用
 - references/checklists.md（PR Readiness）
+- references/execution-pipeline.md（Review Pipeline / 后端优先验证 / Browser QA 触发边界 / Learn）
 - references/spec-templates.md（模板索引）
 - references/templates-specs.md（PR Body）
 

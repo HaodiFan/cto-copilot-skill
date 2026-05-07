@@ -125,11 +125,11 @@
 
 ---
 
-## 7. 待 Owner 偏好确认的策略
+## 7. Owner 已确认的默认策略
 
-以下不作为默认规则，除非 owner 确认：
+以下作为默认工程策略执行：
 
-- 是否要求每个成功 slice 都自动 commit，还是只在用户要求 commit/PR 时提交。
-- 是否对高风险 PR 默认 fan-out 多 agent review，还是只在用户显式要求并行时运行。
-- 是否把 change size 阈值作为硬门禁，还是保持为 review 启发式。
-- 是否要求 spec / plan 每阶段都必须人工确认，还是只在高风险和需求不清时确认。
+- **不自动逐 slice commit**：每个 slice 要验证，但只在用户要求 commit/PR、项目规范要求，或当前任务本身是提交/发 PR 时提交。避免 agent 制造过多低质量 commit。
+- **不默认 fan-out 多 agent review**：高风险 PR 必须跑对应 review roles，但多 agent 并行只在用户明确要求、宿主明确授权、或 release/ship gate 写明需要时运行。
+- **change size 是启发式 + 大 PR 硬门禁**：500 行以内按 review 启发式处理；500-1000 行默认拆分，不拆必须解释；超过 1000 行必须拆分，除非 owner 明确批准机械迁移、大文件删除或生成快照。
+- **不强制每阶段人工确认**：需求不清、高风险、触动架构边界、状态机、权限、存储、公共 API、外部平台规则时必须确认；小修、文档、单 PR follow-up、明确验收标准的任务可直接推进。

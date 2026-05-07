@@ -53,7 +53,7 @@
 - `checklists.md` 增加 source-driven 验证、change size 自检和大 PR 拆分规则；PR readiness 要求说明大 diff 例外。
 - `prompts-guide.md` 增加宿主无关的 lifecycle aliases：`/spec`、`/plan`、`/build`、`/test`、`/review`、`/ship`、`/learn`。
 - `AGENTS.md` 模板补充 source-driven、PR 拆分、checkout/worktree、后端优先验证等 agent 规则。
-- 保留待 owner 确认的策略：是否自动逐 slice commit、是否默认 fan-out 多 agent review、change size 是否硬门禁、spec/plan 是否每阶段都强制人工确认。
+- Owner 已确认默认策略：不自动逐 slice commit；不默认 fan-out 多 agent review；change size 使用启发式 + 大 PR 硬门禁；只在需求不清、高风险或架构边界变化时强制人工确认。
 
 ### 版本号
 

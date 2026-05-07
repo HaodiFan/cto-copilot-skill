@@ -181,7 +181,7 @@ P0 不做 <non-goal>。
 下一步：
 
 - 确认关联 design doc。
-- 读取 `execution-pipeline.md` §2 判断 checkout/worktree；读取 §3 输出 implementation plan。
+- 读取 `execution-pipeline.md` §2 判断 checkout/worktree；读取 `agent-operating-standards.md` 检查 source-driven、change size 和常见 rationalization；读取 §3 输出 implementation plan。
 - 拆成能产生可观察行为的 vertical slices，并标出每个 slice 的 validation gate。
 - 标出影响目录、数据模型变化、API 变化、UI 变化、测试、文档和 review roles。
 - 多步 feature 没有 plan 不进入 Stage 6；单点小改、POC、事故救火可走例外，但要说明原因。
@@ -211,6 +211,7 @@ Milestone 4: tests and docs
 下一步：
 
 - 编辑前先检查 repo，并按 `execution-pipeline.md` §2 判断是在当前 checkout 直接开发，还是新建 worktree；不得擅自 stash/revert 用户改动。
+- 命中新依赖、外部 API、平台规则、框架升级、鉴权/支付/合规时，先按 `agent-operating-standards.md` 做 source-driven check。
 - 读取 canonical docs（含 `CONSTITUTION.md`、`docs/memory-bank/active-context.md`、`docs/memory-bank/patterns.md`）和现有实现模式。
 - 多步 feature 先读取 implementation plan；没有 plan 时退回 Stage 5。
 - 按 `execution-pipeline.md` 的 slice 执行，完成一个可观察行为再进入下一个。

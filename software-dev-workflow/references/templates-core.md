@@ -257,10 +257,14 @@
 - 开工先读 `docs/memory-bank/active-context.md` + `docs/memory-bank/patterns.md`。
 - UI 任务还必须读 `DESIGN.md` 与对应 layout spec。
 - 每个正式任务必须关联 `docs/design/active/*` 与 `docs/requirements/*`。
+- 按 `BRANCHING.md` 判断 checkout/worktree；不得擅自 stash/revert/reset 用户改动。
 - 业务需求由用户提供，agent 不编造业务意图。
 - 没有 spec，不新增架构层、状态机、存储、权限、全局依赖或公共 API。
+- 新依赖、外部 API、平台规则、框架升级、鉴权/支付/合规必须优先查项目内锁定版本或官方来源。
+- 大 diff 先拆 vertical slice；混合 feature/refactor/格式化/依赖升级时先拆 PR。
 - 如果实现必须偏离 spec，先更新 spec，再改代码。
 - 触动 `CONSTITUTION.md` 红线的改动 → 立刻停下，提示用户而非自行突破。
+- 默认后端/API/service 自测优先；浏览器模拟只在用户要求、产品能力本身或浏览器特有 bug 时运行。
 - 会话结束更新 `docs/memory-bank/active-context.md`。
 - 收尾必须说明变更文件、已运行验证、剩余风险。
 ```

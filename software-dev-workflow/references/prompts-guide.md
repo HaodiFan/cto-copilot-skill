@@ -28,6 +28,7 @@ docs/prompts/
 ├── update-active-context.md  # 会话末更新 memory bank
 ├── refactor-safely.md        # 行为保持型重构
 ├── debug-incident.md         # 救火 / 故障排查
+├── lifecycle-aliases.md      # /spec /plan /build /test /review /ship /learn 入口映射
 ├── capture-lesson.md         # 用户纠偏后捕获 L1 lesson
 └── promote-pattern.md        # L1 → L2 / L2 → L3 promotion
 ```
@@ -73,7 +74,39 @@ docs/prompts/
 
 ## 基线 prompt 模板
 
-下面 13 份是建议默认 ship 的基线模板（v0.5.0 起新增 `capture-lesson` 与 `promote-pattern`，支持 skill 自身的 knowhow 沉淀；v0.4.1 已加 `spike-start` 与 `scenario-routing`）。项目可挑用、改写、新增。
+下面是建议默认 ship 的基线模板（v0.7.0 起新增 `lifecycle-aliases`，把常见 slash command 映射为宿主无关 prompt；v0.5.0 起新增 `capture-lesson` 与 `promote-pattern`，支持 skill 自身的 knowhow 沉淀；v0.4.1 已加 `spike-start` 与 `scenario-routing`）。项目可挑用、改写、新增。
+
+### lifecycle-aliases.md
+
+```md
+# Prompt: Lifecycle Aliases
+
+## 何时用
+- 用户输入类似 `/spec`、`/plan`、`/build`、`/test`、`/review`、`/ship`、`/learn`
+- 当前宿主不支持 slash command，但用户想用固定入口触发工作流
+
+## Alias 映射
+- `/spec` / `define` → Stage 1-2：澄清需求、创建/检查 spec
+- `/plan` → Stage 5：implementation plan、vertical slices、validation gates
+- `/build` → Stage 6：按 slice 实现，后端/API/service 自测优先
+- `/test` → Stage 7：验证矩阵、最小相关验证、显式触发时 Browser QA
+- `/review` → Stage 7-8：code review standards + review pipeline
+- `/ship` → Stage 8：PR readiness、release gate、rollback、learn 收口
+- `/learn` → Stage 8-9：memory-bank、lessons、patterns promotion
+
+## 引用的 references
+- references/stage-playbook.md
+- references/execution-pipeline.md
+- references/agent-operating-standards.md
+- references/checklists.md
+- references/code-review-standards.md（review 时）
+- references/lessons.md / references/patterns-skill.md（learn 时）
+
+## 完成判定
+- [ ] 已把 alias 转成明确阶段
+- [ ] 没有绕过需求、source-driven、checkout/worktree、验证 gate
+- [ ] 输出符合规划类 7 字段模板或执行类收尾格式
+```
 
 ### scaffold-new-project.md
 
@@ -595,6 +628,7 @@ docs/prompts/
 
 | Prompt | 触发信号 |
 |---|---|
+| lifecycle-aliases | `/spec` / `/plan` / `/build` / `/test` / `/review` / `/ship` / `/learn` |
 | scaffold-new-project | 新 repo / 空目录 / "怎么搭" |
 | spike-start | POC / spike / demo / 一次性脚本 / 试一下 |
 | handover-audit | 接手 / 老代码 / "怎么继续" |

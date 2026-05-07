@@ -4,7 +4,7 @@
 
 ## Status
 
-- Version: 0.6.1
+- Version: 0.7.0
 - Stage: active
 
 ## Skill 内容
@@ -14,6 +14,7 @@
 - References：
   - `references/stage-playbook.md` —— Stage P 与 Stage 0–9 阶段判断与下一步动作（Stage I「接手盘点」单独成文）
   - `references/execution-pipeline.md` —— Stage 5–8 的硬 gate、checkout/worktree 策略、implementation plan 质量标准、角色化 review pipeline、后端优先验证、browser QA 触发边界与 learn 边界
+  - `references/agent-operating-standards.md` —— agent 执行纪律：Skill 编写结构、common rationalizations、red flags、source-driven gate、change size rules、lifecycle prompt aliases
   - `references/scenario-playbooks.md` —— RPA/数据采集、OCR/文档智能、视觉质检、数据治理、LLM 生产链路、浏览器自动化、POC/spike 的场景化 playbook
   - `references/project-blueprints.md` —— 5 种项目形态的 starter 目录与首次提交清单
   - `references/architecture-cases.md` —— 通用架构选型 case 库（20 大类，深度档：定位 / 适用 / 反例 / 代价 / 退出成本 / 决策信号 / worked example / 踩坑 / 决策矩阵）
@@ -26,7 +27,7 @@
   - `references/code-review-standards.md` —— 代码审查口径：代码坏味道、潜在行为风险、测试重点、密钥/硬编码风险、真人测试真源
   - `references/inheriting-projects.md` —— 接手已有项目的盘点流程（含 §1.0 自动识别）、现状报告模板、文档补齐顺序
   - `references/memory-bank-guide.md` —— AI agent 跨会话上下文的"指针 + 增量"模式（brief / tech-context / patterns / active-context）
-  - `references/prompts-guide.md` —— 13 份可复用 prompt 模板（scaffold / spike-start / handover-audit / new-feature / scenario-routing / new-design-doc / new-adr / pre-pr / update-active-context / refactor-safely / debug-incident / **capture-lesson** / **promote-pattern**）
+  - `references/prompts-guide.md` —— 可复用 prompt 模板（lifecycle-aliases / scaffold / spike-start / handover-audit / new-feature / scenario-routing / new-design-doc / new-adr / pre-pr / update-active-context / refactor-safely / debug-incident / **capture-lesson** / **promote-pattern**）
   - `references/lessons.md` —— **Skill 级 L1 纠偏日志**（每次用户纠正方案 agent 主动追加；连续编号 L-NNNN）
   - `references/patterns-skill.md` —— **Skill 级 L2 验证过的 pattern 库**（来自 lessons 的合并；连续编号 P-NNNN）
 
@@ -38,11 +39,27 @@
 - 支持 Stage 0–4 的真实 8 步顺序：folders → branching → architecture+constitution+ADR → requirements+design lifecycle → layout → components → memory-bank+prompts → AGENTS.md
 - 20 大类通用架构决策 + 11 大类 AI 架构决策的可查 case 库
 - 项目红线（CONSTITUTION.md）+ 决策记录（ADR）+ 设计文档生命周期（backlog/active/done）三件套
-- 执行管线：先判断 checkout/worktree 策略；多步 feature 必须有 implementation plan，Stage 7/8 按角色化 Review Pipeline 与后端优先验证收口
+- 执行管线：先判断 checkout/worktree 策略与 source-driven gate；多步 feature 必须有 implementation plan，Stage 7/8 按角色化 Review Pipeline 与后端优先验证收口
+- Agent 执行纪律：反 rationalization、red flags、change size rules、lifecycle aliases，降低跳过 spec/test/source check 的概率
 - AI agent 跨会话上下文（Memory Bank）+ 可复用动作模板（Prompts）
 - 接手项目专用盘点流程（含自动识别），默认尊重现状；支持 legacy / pre-vibecoding 文档迁移
 - 代码审查口径：优先检查《重构》坏味道、潜在行为风险与测试重点、secret / hardcode 风险，并保留真人验收为业务真源
 - 7 字段「下一步」统一输出格式
+
+## v0.7.0 新增（Agent 执行纪律 + Source-driven Gate）
+
+- 新增 `references/agent-operating-standards.md`，把从通用工程 skill 套件中适合吸收的部分落成稳定规则：Skill/Reference 编写标准、common rationalizations、red flags、source-driven gate、change size rules、lifecycle prompt aliases。
+- `execution-pipeline.md` 增加 Source Gate：新依赖、外部 API、框架升级、平台规则、安全/合规事实必须用官方或项目内来源确认。
+- `checklists.md` 增加 source-driven 验证、change size 自检和大 PR 拆分规则；PR readiness 要求说明大 diff 例外。
+- `prompts-guide.md` 增加宿主无关的 lifecycle aliases：`/spec`、`/plan`、`/build`、`/test`、`/review`、`/ship`、`/learn`。
+- `AGENTS.md` 模板补充 source-driven、PR 拆分、checkout/worktree、后端优先验证等 agent 规则。
+- Owner 已确认默认策略：不自动逐 slice commit；不默认 fan-out 多 agent review；change size 使用启发式 + 大 PR 硬门禁；只在需求不清、高风险或架构边界变化时强制人工确认。
+
+### 版本号
+
+- `SKILL.md` `0.6.1` → `0.7.0`
+- `agents/openai.yaml` 同步 `0.7.0`
+- `README.md` Version `0.7.0`
 
 ## v0.6.1 新增（Checkout / Worktree 策略）
 

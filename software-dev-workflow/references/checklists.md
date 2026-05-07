@@ -56,6 +56,14 @@ npm run build
 - 不运行造成的风险
 - 建议后续动作
 
+### Source-driven 验证
+
+命中新依赖、外部 API、平台规则、框架升级、鉴权/支付/合规时，验证结果必须包含：
+
+- [ ] 项目内锁定版本、ADR、README、官方 SDK 类型或官方文档来源。
+- [ ] 版本 / 日期 / 适用范围。
+- [ ] 哪些结论来自来源，哪些是 agent 推断。
+
 ---
 
 ## 需求文档完备性 Checklist（Stage 1 用）
@@ -251,6 +259,7 @@ npm run build
 - [ ] UI 改动：layout spec 已更新或新增。
 - [ ] UI 改动：所选组件全部在 `DESIGN.md` 内；新组件已先入 `DESIGN.md`。
 - [ ] 有测试或验证计划。
+- [ ] 新依赖、外部 API、框架升级、平台规则、鉴权/支付/合规等已按 `agent-operating-standards.md` 走 source-driven gate。
 - [ ] 已判断是否需要 changelog。
 - [ ] 实现已拆成 vertical slices。
 - [ ] 多步 feature 已按 `execution-pipeline.md` 输出 implementation plan。
@@ -264,9 +273,11 @@ npm run build
 
 - [ ] Goal 是用户可观察行为，不是技术动作。
 - [ ] Source docs 已链接 requirements / design doc / ADR / layout spec（如有）。
+- [ ] Source-driven evidence 已列出：新依赖、外部 API、平台规则、框架升级等用到的官方或项目内来源。
 - [ ] Checkout / worktree 决策已说明；如并行开发，写明每个 worktree / agent 的写入范围。
 - [ ] Scope / Non-goals 明确。
 - [ ] File Map 列出新建/修改文件及责任边界。
+- [ ] Change size 已评估；预估大于 500 行时有拆分策略或不拆理由。
 - [ ] Vertical slices 可单独验证，不只是“后端/前端/测试”分层。
 - [ ] 每个 slice 有 validation gate：后端/API/单元/集成/契约测试命令、样本、人工验收或 replay/eval。
 - [ ] 每个 slice 标出需要的 review roles（Product / Eng / Design / DX / Code / QA / Security / Release）。
@@ -330,9 +341,11 @@ npm run build
 
 - [ ] Diff 聚焦一个 topic。
 - [ ] 当前 checkout/worktree 决策符合 `BRANCHING.md`；单 PR follow-up 或小修直接开发时，当前分支就是目标分支。
+- [ ] Diff size 符合 `agent-operating-standards.md` 的 change size rules；大 PR 已拆分或解释例外。
 - [ ] 没有无关格式化噪音。
 - [ ] 没有混入用户未提交改动；如保留无关脏文件，PR body 或收尾说明已列出。
 - [ ] 没有提交生成文件或运行时文件。
+- [ ] 新依赖、外部 API、平台规则、框架升级、鉴权/支付/合规的 source-driven evidence 已写进 PR body 或关联文档。
 - [ ] 已按 `references/code-review-standards.md` 检查代码坏味道、潜在行为风险、密钥/硬编码风险。
 - [ ] 已按 `references/execution-pipeline.md` 跑完命中的 Review Pipeline roles。
 - [ ] 已优先运行后端/API/service/contract/fixture/replay 等最小相关验证。
@@ -415,6 +428,7 @@ agent / 开发者发现自己的实现**会**触线时：
 ## 常见反模式
 
 - 行为不明确时先写代码、后补 spec。
+- 把“我觉得这个很小”当成跳过验收标准、验证和 source check 的理由。
 - 多份互相竞争的真相源文档。
 - agent 替用户编造业务需求，没有 Requirements Doc 就直接做 design doc。
 - 跳过架构决策直接搭脚手架，导致后续选型被既成事实绑架。
@@ -428,6 +442,8 @@ agent / 开发者发现自己的实现**会**触线时：
 - 一个分支混合 feature、refactor、docs、依赖升级、格式化。
 - 在脏工作区直接开写，或擅自 stash/revert 用户改动。
 - 多 agent / 多任务共写一个 checkout，导致 diff 互相覆盖。
+- 大 diff 不拆分，也不说明为什么必须保持一个 PR。
+- 新依赖、外部 API 或平台规则只凭记忆实现，没有官方来源或项目内锁定版本依据。
 - AI 生成代码后不验证。
 - PR 不写风险和验证方式。
 - 接手项目立刻"重构整理"，破坏现有约定。

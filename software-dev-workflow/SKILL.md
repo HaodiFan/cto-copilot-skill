@@ -1,7 +1,7 @@
 ---
 name: software-dev-workflow
-description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、业务场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、legacy 项目治理、POC/spike、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、执行管线、checkout/worktree 策略、角色化 review pipeline、后端优先验证、浏览器 QA 触发边界、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、代码审查、PR review、实现方法评审、PR/release readiness、RPA/数据采集、OCR/文档智能、视觉质检、LLM 生产链路、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。Skill 自带三层 knowhow 沉淀机制（lessons / patterns / reference 升级），用户每次纠偏都会被结构化捕获，让 skill 跨会话自我进化。
-version: 0.6.1
+description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、业务场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、legacy 项目治理、POC/spike、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、执行管线、checkout/worktree 策略、agent 执行纪律、source-driven gate、角色化 review pipeline、后端优先验证、浏览器 QA 触发边界、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、代码审查、PR review、实现方法评审、PR/release readiness、RPA/数据采集、OCR/文档智能、视觉质检、LLM 生产链路、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。Skill 自带三层 knowhow 沉淀机制（lessons / patterns / reference 升级），用户每次纠偏都会被结构化捕获，让 skill 跨会话自我进化。
+version: 0.7.0
 ---
 
 # 软件开发工作流
@@ -148,6 +148,7 @@ Skill 有三层 knowhow，agent 必须主动维护：
 - 一个 topic 一个分支，避免混入无关变更。
 - 编辑前必须判断 checkout/worktree 策略：新 feature、并行任务、脏工作树或高风险改动优先新 worktree；小修、文档、单 PR follow-up 可在当前目标分支直接开发；不得擅自 stash/revert 用户改动。
 - 多步 feature 先有 implementation plan；计划必须包含文件边界、vertical slices、validation gates 和命中的 review roles（详见 `execution-pipeline.md`）。
+- 新依赖、外部 API、平台规则、框架升级、鉴权/支付/合规等技术事实必须 source-driven：优先项目内锁定版本和官方来源，并记录证据。
 - 优先做最小 vertical slice（端到端闭环），不做大面积半成品。
 - 测试默认后端/API/service 自测优先；除非用户要求、任务本身是浏览器/RPA能力、或问题只能在真实浏览器复现，不主动跑浏览器模拟。
 - 信息不足时，优先做可逆的最小假设并明确说明；只有错误假设代价高时才提问。
@@ -169,6 +170,7 @@ Skill 有三层 knowhow，agent 必须主动维护：
 
 - `references/stage-playbook.md`：按阶段判断信号、产物和下一步动作。
 - `references/execution-pipeline.md`：Stage 5-8 的硬 gate、checkout/worktree 策略、implementation plan 质量标准、角色化 review pipeline、后端优先验证、browser QA 触发边界和 learn 边界。
+- `references/agent-operating-standards.md`：agent 执行纪律，覆盖 Skill 编写结构、common rationalizations、red flags、source-driven gate、change size rules 和 lifecycle prompt aliases。
 - `references/scenario-playbooks.md`：按业务自动化场景补充技术选型、最小切片、验证门禁和反模式（RPA/OCR/视觉/数据/LLM/浏览器自动化/POC）。
 - `references/project-blueprints.md`：5 种项目形态的 starter 目录结构与首次提交清单。
 - `references/architecture-cases.md`：通用架构选型 case 库（Repo / 渲染 / 后端 / 数据 / 部署 / 鉴权 / 异步 / 可观测性 / 业务自动化 / 客户端 / 状态管理 / 测试 / CI/CD / 配置 / i18n / 合规 / 性能等 20 大类）。

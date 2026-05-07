@@ -57,6 +57,7 @@ docs/
 | Layout Spec | `templates-specs.md` |
 | PR Body | `templates-specs.md` |
 | Checkout / Worktree / Implementation Plan / Review Pipeline | `execution-pipeline.md` |
+| Agent 执行纪律 / Source-driven gate / Change size | `agent-operating-standards.md` |
 | Memory Bank | `memory-bank-guide.md` |
 | Prompts 操作手册 | `prompts-guide.md` |
 | Skill 级 L1 纠偏日志 | `lessons.md` |

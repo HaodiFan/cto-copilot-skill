@@ -30,6 +30,14 @@ def skill_dir(root: Path) -> Path:
     return root / SKILL_NAME
 
 
+def is_installed_layout(root: Path, package: Path) -> bool:
+    return (
+        package.parent == root
+        and root.name == "skills"
+        and root.parent.name in {".agents", ".codex"}
+    )
+
+
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
@@ -63,7 +71,6 @@ def add(findings: list[Finding], level: str, message: str) -> None:
 
 def check_required_files(root: Path, package: Path, findings: list[Finding]) -> None:
     required = [
-        root / "README.md",
         package / "SKILL.md",
         package / "agents/openai.yaml",
         package / "scripts/install.py",
@@ -79,6 +86,8 @@ def check_required_files(root: Path, package: Path, findings: list[Finding]) -> 
         package / "references/psps-framework.md",
         package / "references/refactoring-rules.md",
     ]
+    if not is_installed_layout(root, package):
+        required.insert(0, root / "README.md")
     for path in required:
         if not path.exists():
             add(findings, "error", f"missing required file: {path.relative_to(root)}")

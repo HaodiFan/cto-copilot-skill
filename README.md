@@ -359,7 +359,7 @@ engineering-everything/
 
 ## 状态
 
-- 当前版本：`0.9.0`
+- 当前版本：`0.9.1`
 - 公开仓库：`HaodiFan/engineering-everything`
 - Skill ID：`engineering-everything`
 - License：暂未声明，公开分发前建议补充 LICENSE

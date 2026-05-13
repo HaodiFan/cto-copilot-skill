@@ -1,7 +1,7 @@
 ---
 name: engineering-everything
 description: Engineering Everything 是用工程思维看待一切创造型任务的决策 Skill，默认用中文交互。用于 Codex 需要先判断工程路由，再在软件开发、组织构建、企业机制、SOP/流程、产品定义、人才面试、入职培训、非工程项目方案/排期/人天/成本估算、项目形态、架构选型、业务场景、执行计划、验证、代码审查、发布治理和经验沉淀之间选择正确知识路径时；适用于新建项目、接手旧项目、非软件开发项目、组织/企业工程化、legacy 治理、POC/spike、PRD/design doc、ADR、脚手架、RPA/电商数据采集、OCR、CV、LLM/Agent、数据分析、PR/release readiness 等场景。先输出路由判断，再决定读哪个 reference、补哪个产物、跑哪个 gate。保留 lessons / patterns / reference 三层 knowhow 机制，让每次用户纠偏可沉淀成可复用工程判断。
-version: 0.9.0
+version: 0.9.1
 ---
 
 # Engineering Everything / 工程化万物
@@ -145,7 +145,7 @@ Skill 有三层 knowhow，agent 必须主动维护：
 - 全局真相源必须唯一：architecture、development rules、design rules、folder declaration、terminology、changelog、branching、constitution。
 - **`CONSTITUTION.md` 是项目红线**：触线立刻停下、提示用户，不自行突破（详见 `templates-governance.md`）。
 - **架构决策走 ADR**：在 `docs/decisions/ADR-NNNN-*.md` 记录"为什么这么选"（详见 `templates-governance.md`）。
-- **Memory Bank 是 agent 跨会话上下文**（`docs/memory-bank/`）：开工先读 `active-context.md`，会话结束更新；详见 `memory-bank-guide.md`。
+- **Memory Bank 是 agent 跨会话上下文**（`docs/memory-bank/`）：开工先读上下文入口，长 `active-context.md` 必须先走关键词 map 再定向读正文；详见 `memory-bank-guide.md`。
 - **Design doc 有生命周期**：`backlog/ → active/ → done/`，状态由目录位置体现，AGENTS 默认只读 `active/`。
 - 一个 topic 一个分支，避免混入无关变更。
 - 编辑前必须判断 checkout/worktree 策略：新 feature、并行任务、脏工作树或高风险改动优先新 worktree；小修、文档、单 PR follow-up 可在当前目标分支直接开发；不得擅自 stash/revert 用户改动。

@@ -361,9 +361,10 @@ docs/spike-note.md     # 假设、方案、样本、结论、是否升级
 
 ## 场景化输出补充
 
-如果用户问“下一步做什么”，仍使用 `SKILL.md` 的 7 字段模板。场景信息写在 `项目形态` 或 `缺失内容` 中，例如：
+如果用户问“下一步做什么”，仍使用 `SKILL.md` 的 CTO 路由模板。场景信息写在 `CTO路由`、`项目形态` 或 `缺失内容` 中，例如：
 
 ```text
+CTO路由: Scenario | OCR / 文档智能 | Architecture
 项目形态: Python Agent/CLI（场景：OCR / 文档智能）
 缺失内容: 输出 schema、样本 fixture、置信度阈值、人审规则
 ```

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/HaodiFan/engineering-everything/schemas/pattern.schema.json",
+  "title": "Engineering Everything Pattern",
+  "type": "object",
+  "required": [
+    "id",
+    "created",
+    "status",
+    "tags",
+    "source_lessons",
+    "confirmation_count",
+    "applicability",
+    "counterexamples",
+    "description"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^P-[0-9]{4}$"
+    },
+    "created": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "pattern": "^(active|pending-review|promoted-to-reference|deprecated|superseded by P-[0-9]{4})$"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "source_lessons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^L-[0-9]{4}$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "confirmation_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "applicability": {
+      "type": "string",
+      "minLength": 1
+    },
+    "counterexamples": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "promotion_target": {
+      "type": "string"
+    },
+    "promotion_pr": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

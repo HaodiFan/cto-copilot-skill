@@ -40,6 +40,7 @@
 下一步：
 
 - 写一句话定义：用户、系统类型、核心能力、核心问题、P0 非目标。
+- 用 `psps-framework.md` 抽取 Persona / Scenario / Pain / Solution Surface，避免从一句意图直接跳到功能清单。
 - 给出形态候选（不超过 3 种），并说明各自代价。**不要立刻拍板**。
 - 提示用户：业务需求文档需由用户提供，agent 仅协助结构化。
 
@@ -70,6 +71,7 @@ P0 不做 <non-goal>。
 
 - **请求用户提供需求文档**（参考 `spec-templates.md` → `templates-specs.md` 的 Requirements Doc 模板）。
 - 用户已给材料的，按模板抽取并回填，缺失项标 `TODO（用户补充）`。
+- 用户说不清楚时，先按 `psps-framework.md` 主动还原 PSPS 初稿：谁决策/执行/验收、什么场景、卡在哪里、需要什么系统表面。
 - 用 `checklists.md` 的「需求文档完备性 checklist」校验是否够开工。
 - 把未知点转成 open questions，按"agent 可推断 / 必须用户回答"分类。
 
@@ -94,6 +96,7 @@ P0 不做 <non-goal>。
 下一步：
 
 - 创建或更新一份聚焦的 design doc。
+- Design doc 必须包含 PSPS 推导出的系统表面：数据模型、页面/视图、流程/SOP、自动化、指标/报表、权限/审计。
 - 必须包含验收标准和回滚点。
 - 不写"大而全总集"，除非用户明确要项目 baseline。
 - UI 类 design doc 必须关联或先建 `DESIGN.md` 与 layout spec。
@@ -181,6 +184,7 @@ P0 不做 <non-goal>。
 下一步：
 
 - 确认关联 design doc。
+- 确认 design doc 中的 PSPS 已能解释本 feature 的用户、场景、痛点和 Solution Surface；缺失则退回 Stage 1/2。
 - 读取 `execution-pipeline.md` §2 判断 checkout/worktree；读取 `agent-operating-standards.md` 检查 source-driven、change size 和常见 rationalization；读取 §3 输出 implementation plan。
 - 拆成能产生可观察行为的 vertical slices，并标出每个 slice 的 validation gate。
 - 标出影响目录、数据模型变化、API 变化、UI 变化、测试、文档和 review roles。
@@ -301,6 +305,7 @@ PR body：
 下一步：
 
 - 区分行为保持型 refactor 和功能变更。
+- 读取 `refactoring-rules.md`，先识别明确坏味道，再选择对应重构手法。
 - 移动代码前先识别或补充测试。
 - 若边界变化，更新 folder declaration 或 architecture docs；架构方向调整需补 ADR。
 - 重构不得绕开 `CONSTITUTION.md` 红线（不能借"清理"之名移除 audit、绕鉴权、合并 truth source 等）。

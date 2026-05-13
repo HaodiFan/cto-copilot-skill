@@ -42,7 +42,8 @@ docs/
 
 | 要创建/更新 | 读取 |
 |---|---|
-| CTO 场景地图 / 使用路由 | `cto-scenario-map.md` |
+| 工程场景地图 / 使用路由 | `engineering-scenario-map.md` |
+| PSPS / 需求洞察 / 构建闭环 | `psps-framework.md` |
 | `README.md` | `templates-core.md` |
 | `ARCHITECTURE.md` | `templates-core.md` |
 | `DEVELOPMENT.md` | `templates-core.md` |
@@ -58,6 +59,7 @@ docs/
 | Layout Spec | `templates-specs.md` |
 | PR Body | `templates-specs.md` |
 | Checkout / Worktree / Implementation Plan / Review Pipeline | `execution-pipeline.md` |
+| Refactor Plan / 行为保持型重构 | `refactoring-rules.md`、`checklists.md` |
 | Agent 执行纪律 / Source-driven gate / Change size | `agent-operating-standards.md` |
 | Memory Bank | `memory-bank-guide.md` |
 | Prompts 操作手册 | `prompts-guide.md` |

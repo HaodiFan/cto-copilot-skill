@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/HaodiFan/engineering-everything/schemas/lesson.schema.json",
+  "title": "Engineering Everything Lesson",
+  "type": "object",
+  "required": [
+    "id",
+    "date",
+    "status",
+    "captured_from",
+    "tags",
+    "wrong_default",
+    "corrected_guidance",
+    "rationale",
+    "generalization"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^L-[0-9]{4}$"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "pattern": "^(active|pending-review|deprecated|superseded by L-[0-9]{4})$"
+    },
+    "captured_from": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "wrong_default": {
+      "type": "string",
+      "minLength": 1
+    },
+    "corrected_guidance": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generalization": {
+      "type": "string",
+      "enum": ["cross-project", "project-specific", "scenario-specific", "unknown"]
+    },
+    "affected_reference": {
+      "type": "string"
+    },
+    "related_lessons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^L-[0-9]{4}$"
+      }
+    }
+  },
+  "additionalProperties": false
+}

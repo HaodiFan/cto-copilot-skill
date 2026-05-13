@@ -1,0 +1,22 @@
+validation_commands:
+  generic:
+    - git diff --check
+  frontend:
+    - pnpm typecheck
+    - pnpm build
+    - pnpm test
+  python_backend:
+    - ruff check .
+    - pytest
+    - alembic upgrade head
+  python_agent_cli:
+    - ruff check .
+    - pytest
+    - python -m <package> --help
+  desktop:
+    - pnpm --dir apps/desktop typecheck
+    - pnpm --dir apps/desktop build
+  library_sdk:
+    - pytest
+    - npm test
+    - npm run build

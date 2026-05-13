@@ -20,6 +20,14 @@
 | 用户类型 | 核心场景 | 频率 | 关键痛点 |
 |---|---|---|---|
 
+## PSPS
+
+| Persona | Scenario | Pain | Solution Surface |
+|---|---|---|---|
+| 管理者 / owner | | | 统计、状态、指标、异常 |
+| 执行者 | | | 最少必填、默认值、下一步动作 |
+| 协作者 / 外部角色 | | | 权限、通知、交接、验收 |
+
 ## 业务目标
 
 - 一句话目标：
@@ -86,6 +94,15 @@
 ## Non-goals
 
 ## User Flow / System Flow
+
+## PSPS-Derived Surface
+
+| 触发 | 必须设计 |
+|---|---|
+| 管理者 / 老板 | 统计/看板/报表、状态分布、核心指标 |
+| 任务分配 / 流转 | 状态机、Kanban/队列、owner、阻塞原因 |
+| 图片 / 素材 / 商品 / 文件 / 资产 | 资产库/Gallery、元数据、搜索筛选、生命周期 |
+| 排期 / 计划 / 时间线 | Gantt/Calendar/Timeline、起止日期、依赖 |
 
 ## Data Model / State Changes
 

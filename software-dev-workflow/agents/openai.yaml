@@ -1,9 +1,0 @@
-# Launcher manifest（Codex 风格）
-# 其他 agent 平台请按各自 manifest 规范另存（例如 agents/claude.yaml、agents/cursor.yaml 等）
-# version 字段必须与 ../SKILL.md 顶部 frontmatter 的 version 保持一致；版本号在 SKILL.md 升级时同步更新。
-skill: software-dev-workflow
-version: 0.8.0
-interface:
-  display_name: "CTO 分身"
-  short_description: "先判断 CTO 路由，再给软件研发下一步"
-  default_prompt: "使用 $software-dev-workflow 作为 CTO 分身评估我的软件项目：先判断场景路由，再给出阶段、形态、业务场景、技术路径、执行管线与验证门禁。"

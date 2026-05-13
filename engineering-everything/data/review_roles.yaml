@@ -1,0 +1,25 @@
+review_roles:
+  product:
+    trigger: ["new capability", "scope change", "critical user flow"]
+    evidence: ["requirements/design doc update"]
+  architecture:
+    trigger: ["data", "state", "permission", "runtime dependency", "public API"]
+    evidence: ["ARCHITECTURE.md or ADR diff"]
+  design:
+    trigger: ["UI", "interaction", "layout", "visual system"]
+    evidence: ["screenshot or layout spec"]
+  dx:
+    trigger: ["API", "CLI", "SDK", "documentation", "integration path"]
+    evidence: ["README/docs/API examples"]
+  code:
+    trigger: ["non-trivial code change"]
+    evidence: ["code-review-standards.md findings"]
+  qa:
+    trigger: ["user-visible workflow", "service", "RPA", "OCR", "AI pipeline"]
+    evidence: ["backend test, fixture, replay, or explicit browser QA"]
+  security:
+    trigger: ["auth", "secret", "PII", "payment", "platform ToS", "automation"]
+    evidence: ["threat notes or audit log"]
+  release:
+    trigger: ["PR", "deploy", "migration", "rollback"]
+    evidence: ["PR body or release notes"]

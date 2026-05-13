@@ -74,6 +74,7 @@ npm run build
 
 - [ ] 业务背景：能解释"为什么做"
 - [ ] 目标用户：至少 1 类用户的场景与痛点
+- [ ] PSPS：Persona / Scenario / Pain / Solution Surface 已能解释系统闭环
 - [ ] 业务目标：1 句话目标 + 至少 1 个可量化成功指标
 - [ ] P0 功能列表：每条带验收标准
 - [ ] 非目标：明确这一版不做什么
@@ -94,6 +95,7 @@ npm run build
 - [ ] 非目标为空
 - [ ] 成功指标不可量化或无截止时间
 - [ ] 性能/合规约束与所选架构明显冲突
+- [ ] 只有功能愿望，没有 Persona / Scenario / Pain 的证据
 
 ### Agent 输出格式
 
@@ -272,6 +274,8 @@ npm run build
 ## Implementation Plan Checklist（Stage 5）
 
 - [ ] Goal 是用户可观察行为，不是技术动作。
+- [ ] PSPS 已写清：谁用/谁管、什么场景、解决什么痛点、需要什么系统表面。
+- [ ] 管理者视角有统计/状态/指标口径；执行者入口只保留必要字段。
 - [ ] Source docs 已链接 requirements / design doc / ADR / layout spec（如有）。
 - [ ] Source-driven evidence 已列出：新依赖、外部 API、平台规则、框架升级等用到的官方或项目内来源。
 - [ ] Checkout / worktree 决策已说明；如并行开发，写明每个 worktree / agent 的写入范围。
@@ -331,7 +335,11 @@ npm run build
 ## Refactor Checklist
 
 - [ ] 明确不改变行为。
+- [ ] 已按 `refactoring-rules.md` 识别具体坏味道，不做泛清理。
+- [ ] 已选择对应重构手法，并说明为什么适用。
 - [ ] 已有测试或 smoke checks 覆盖被移动代码。
+- [ ] 未混入 feature、bug fix、format、dependency upgrade 或 migration。
+- [ ] 大于 500 行、跨模块或影响公共 API 时已拆 PR 或说明不可拆理由。
 - [ ] 如果边界变化，已更新 architecture 或 folder declaration。
 - [ ] 公共 API 保持兼容；不兼容时写 migration notes。
 
@@ -463,10 +471,10 @@ agent / 开发者发现自己的实现**会**触线时：
 
 ## "下一步做什么"输出 Checklist
 
-当用户问下一步时，输出 CTO 路由模板（与 SKILL.md 统一）：
+当用户问下一步时，输出 工程路由模板（与 SKILL.md 统一）：
 
 ```text
-CTO路由:
+工程路由:
 当前阶段:
 项目形态:
 缺失内容:

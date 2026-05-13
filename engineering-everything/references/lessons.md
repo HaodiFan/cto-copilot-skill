@@ -148,7 +148,7 @@ L3 Reference 升级           owner 开 PR 改对应 reference
 
 > 新条目追加到本节末尾，**保持时间顺序**。第一条用 L-0001 开始。
 >
-> 当前条目数：0（v0.5.0 初始化，等待真实 lesson 注入）。
+> 当前条目数：1。
 
 <!-- 示例（不删，是 agent 仿写的样本）：
 
@@ -184,3 +184,32 @@ RAG 的运维成本（embedding 重建、向量库一致性、检索召回 tunin
 -->
 
 <!-- 真实 lessons 从这一行下方开始追加 -->
+
+### L-0001: 长 active-context 先读关键词 map 再读正文
+
+- Date: 2026-05-13
+- Status: active
+- Captured-from: 复盘一次 fast_build/Excel bug 排查链路时，用户指出 Skill 造成整读长上下文和历史流水账干扰，需要优化链路
+- Tags: gov-memory-bank, practice-doc, practice-incident
+
+**❌ 之前的错误方案 / 默认建议**：
+
+开工强制读取完整 `docs/memory-bank/active-context.md`，即使它已经变成数百行记录性文档。
+
+**✅ 正确方案 / 用户给的纠偏**：
+
+当记录性且频繁读取的上下文文档过长时，先维护同目录关键词 mapping 文件；agent 先选关键词，再用搜索词定位正文细节。
+
+**🧠 原因 / 适用条件**：
+
+适用于 active context、incident log、handover log 这类持续追加、需要频繁读取但每次只命中部分主题的文档。不适用于短 spec、ADR 或需要完整顺序阅读的协议文档。
+
+**🔁 是否可泛化**：
+
+- [x] 跨项目可复用（→ 候选 promote 到 patterns-skill.md）
+- [ ] 仅特定项目
+- [ ] 仅特定场景
+
+**🔗 相关**：
+
+- 影响 reference: `memory-bank-guide.md` 的 active-context 使用规则

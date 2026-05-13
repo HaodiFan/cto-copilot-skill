@@ -42,6 +42,7 @@ docs/
 
 | 要创建/更新 | 读取 |
 |---|---|
+| CTO 场景地图 / 使用路由 | `cto-scenario-map.md` |
 | `README.md` | `templates-core.md` |
 | `ARCHITECTURE.md` | `templates-core.md` |
 | `DEVELOPMENT.md` | `templates-core.md` |

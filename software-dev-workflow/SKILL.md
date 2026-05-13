@@ -1,20 +1,21 @@
 ---
 name: software-dev-workflow
-description: 面向软件开发的中文 spec-driven 工作流 Skill。用于 Codex 需要根据软件项目形态、开发阶段、业务场景或缺失产物判断下一步该做什么时；适用于新建项目、接手已有项目、legacy 项目治理、POC/spike、项目脚手架、需求澄清、PRD/design doc、ADR、架构选型、执行管线、checkout/worktree 策略、agent 执行纪律、source-driven gate、角色化 review pipeline、后端优先验证、浏览器 QA 触发边界、目录结构、分支规范、Constitution 红线、Memory Bank、Prompts 库、AGENTS.md、开发计划、实现前检查、验证门禁、代码审查、PR review、实现方法评审、PR/release readiness、RPA/数据采集、OCR/文档智能、视觉质检、LLM 生产链路、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、通用全栈 monorepo 等软件开发场景。Skill 自带三层 knowhow 沉淀机制（lessons / patterns / reference 升级），用户每次纠偏都会被结构化捕获，让 skill 跨会话自我进化。
-version: 0.7.0
+description: CTO 分身型中文软件研发决策 Skill。用于 Codex 需要先判断 CTO 路由，再在产品定义、项目形态、架构选型、业务场景、执行计划、实现验证、代码审查、发布治理和经验沉淀之间选择正确知识路径时；适用于新建项目、接手旧项目、legacy 治理、POC/spike、PRD/design doc、ADR、脚手架、RPA/电商数据采集、OCR、CV、LLM/Agent、数据分析、Web+Backend、Desktop+Local Agent、Python Agent/CLI、Library/SDK、Full-stack Monorepo、PR/release readiness 等软件开发场景。先输出路由判断，再决定读哪个 reference、补哪个产物、跑哪个 gate。保留 lessons / patterns / reference 三层 knowhow 机制，让每次用户纠偏可沉淀成可复用 CTO 判断。
+version: 0.8.0
 ---
 
-# 软件开发工作流
+# CTO Copilot / 软件研发 CTO 分身
 
-用 spec-driven、阶段感知的方式推进软件开发。触发后先判断「新项目还是接手项目」，再判断项目形态、生命周期阶段和业务自动化场景，读取对应 reference，输出下一步具体动作，而不是一次性倾倒整套方法论。
+用 CTO 分身的方式推进软件研发：先判断用户问题属于哪个场景路由，再选择产品、架构、执行、验证、治理或 learn 的知识路径。核心目标不是“先写代码”，而是让 agent 像 CTO 一样先判断方向、风险、真相源和下一步产物。
 
 ## 使用原则
 
-每次回答用户时，先在心里完成分类，并在「规划类」回答顶部输出统一的 7 字段模板。
+每次回答用户时，先按 `references/cto-scenario-map.md` 完成 CTO 路由判断。规划类回答顶部输出统一的 CTO 路由模板。
 
-「规划类」7 字段模板（覆盖原先单独的分类块，不要重复输出两组分类）：
+「规划类」CTO 路由模板（覆盖原先单独的分类块，不要重复输出两组分类）：
 
 ```text
+CTO路由: <主路由 | 命中场景 | 决策层>
 当前阶段: <P POC/Spike | 0 想法 | 1 需求澄清 | 2 Spec | 3 架构 | 4 脚手架 | 5 Feature 规划 | 6 实现 | 7 验证 | 8 PR/发布 | 9 维护 | I 接手盘点>
 项目形态: <Web+Backend | Desktop+Local Agent | Python Agent/CLI | Library/SDK | Full-stack Monorepo | Unknown>（如有场景，追加：场景 <RPA/OCR/LLM/POC/...>）
 缺失内容:
@@ -24,7 +25,7 @@ version: 0.7.0
 停止条件:
 ```
 
-「执行类」回答（直接写代码、修 bug、答疑）不强制 7 字段，但收尾必须包含：变更文件 / 已运行验证 / 未运行检查及原因 / 剩余风险。
+「执行类」回答（直接写代码、修 bug、答疑）不强制完整模板，但收尾必须包含：变更文件 / 已运行验证 / 未运行检查及原因 / 剩余风险。
 
 「闲聊类」或单点澄清不需要任何模板。
 
@@ -56,7 +57,7 @@ version: 0.7.0
 
 - 信号：用户问"现在该干嘛"、"帮我 review 计划"、"项目很乱"、"继续开发"。
 - 行动：读取 `references/stage-playbook.md` 与 `references/checklists.md`。如果是代码审查、PR review、实现方法评审，再读取 `references/code-review-standards.md`。
-- 输出：使用 7 字段模板。
+- 输出：使用 CTO 路由模板。
 
 ### 4. 是 POC / Spike / 临时验证吗？
 
@@ -138,6 +139,7 @@ Skill 有三层 knowhow，agent 必须主动维护：
 ## 核心规则
 
 - spec/design doc 是意图真相源，代码是意图实现。
+- 先判断 CTO 路由，再读取 reference；不要把多个知识域一次性倾倒给用户。
 - **业务需求文档必须由用户提供**，agent 只负责校验完备性、抽取结构、提问澄清，不替用户编造业务意图。
 - 没有 spec，不新增架构层、状态机、存储、权限、全局依赖或公共 API。
 - 全局真相源必须唯一：architecture、development rules、design rules、folder declaration、terminology、changelog、branching、constitution。
@@ -169,6 +171,7 @@ Skill 有三层 knowhow，agent 必须主动维护：
 ## References
 
 - `references/stage-playbook.md`：按阶段判断信号、产物和下一步动作。
+- `references/cto-scenario-map.md`：CTO 分身使用场景地图，按生命周期、项目形态、业务场景和决策层路由知识。
 - `references/execution-pipeline.md`：Stage 5-8 的硬 gate、checkout/worktree 策略、implementation plan 质量标准、角色化 review pipeline、后端优先验证、browser QA 触发边界和 learn 边界。
 - `references/agent-operating-standards.md`：agent 执行纪律，覆盖 Skill 编写结构、common rationalizations、red flags、source-driven gate、change size rules 和 lifecycle prompt aliases。
 - `references/scenario-playbooks.md`：按业务自动化场景补充技术选型、最小切片、验证门禁和反模式（RPA/OCR/视觉/数据/LLM/浏览器自动化/POC）。

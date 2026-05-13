@@ -1,17 +1,65 @@
-# Software Dev Workflow Skill
+# CTO Copilot Skill（CTO 分身）
 
-中文软件开发工作流 Skill，按"项目形态 / 当前阶段 / 是否接手"判断下一步该做什么。基于 spec-driven 开发与软件工程最佳实践。
+一个中文软件研发 **CTO 分身 Skill**：用户一句话进来时，先判断它属于哪个研发场景，再路由到正确的产品、架构、执行、验证、review、发布、治理、业务场景或经验沉淀知识。
+
+它不是“先写代码”的提示词，而是让 agent 先像 CTO 一样判断方向、风险、真相源和下一步产物：该问需求就问需求，该补设计就补设计，该写代码就按最小切片写，该停下做合规判断就停下。
+
+> 对外推荐名称：`CTO Copilot Skill` / `CTO 分身 Skill`。推荐 GitHub repo name：`cto-copilot-skill`。本次仍保留兼容 Skill ID 与目录：`software-dev-workflow/`，所以已有 `$software-dev-workflow` 触发方式不受影响。
 
 ## Status
 
-- Version: 0.7.0
+- Version: 0.8.0
 - Stage: active
+
+## 它适合什么
+
+- 从 0 做软件项目：想法、PRD、design doc、架构选型、脚手架。
+- 接手旧项目：先盘点现状、尊重 as-is、补文档和第一周行动路径。
+- 拆 feature：从需求到 implementation plan、vertical slices、validation gates。
+- 做实现和修 bug：先判断 checkout/worktree、source-driven gate、最小切片和验证门禁。
+- 做 review / PR / release：按角色化 review pipeline 和 PR readiness 收口。
+- 做业务技术选型：RPA/电商数据采集、OCR、CV、LLM/Agent、数据分析、浏览器自动化。
+- 建工程治理：Constitution、ADR、Memory Bank、Prompts、AGENTS.md、分支规范。
+- 把用户纠偏沉淀成可复用 knowhow：lessons → patterns → reference。
+
+## 使用场景地图
+
+| 用户问法 | CTO 路由 | 优先读取 | 典型输出 |
+|---|---|---|---|
+| “我有个想法 / 想做个系统” | Product → Stage 0-2 | `stage-playbook.md`、`checklists.md`、`spec-templates.md` | 需求缺口、非目标、澄清问题、下一步产物 |
+| “从 0 搭项目 / 技术栈怎么选” | Architecture → Stage 3-4 | `architecture-cases.md`、AI 项目加 `architecture-cases-ai.md`、`project-blueprints.md` | 项目形态、技术基线、starter tree、ADR 候选 |
+| “接手这个老项目 / 继续迭代” | Inherit → Stage I | `inheriting-projects.md` | 自动识别、现状报告、第一周做与不做 |
+| “这个功能怎么拆” | Execution Plan → Stage 5 | `execution-pipeline.md`、`checklists.md` | implementation plan、vertical slices、validation gates |
+| “帮我实现 / 修 bug / 迁移” | Build → Stage 6 | `stage-playbook.md`、`execution-pipeline.md`、`agent-operating-standards.md` | 最小切片实现、验证结果、剩余风险 |
+| “怎么测 / 是否 ready” | Validation → Stage 7 | `checklists.md`、`execution-pipeline.md` | 最小相关验证、缺口、release 风险 |
+| “review / PR / release” | Review/Release → Stage 7-8 | `code-review-standards.md`、`checklists.md`、`execution-pipeline.md` | findings、PR readiness、rollback、learn 收口 |
+| “RPA / 电商数据 / OCR / CV / LLM / 数据分析” | Scenario → 场景路线 | `scenario-playbooks.md`，必要时加 `architecture-cases-ai.md` | 默认选型、合规边界、最小切片、场景 checklist |
+| “项目规范 / 文档 / agent 协作” | Governance | `templates-core.md`、`templates-governance.md`、`memory-bank-guide.md`、`prompts-guide.md` | 文档骨架、红线、ADR、Memory Bank |
+| “这次纠偏记住 / 方法论升级” | Learn | `lessons.md`、`patterns-skill.md` | L1 lesson、L2 pattern、reference 升级建议 |
+
+## CTO 路由模板
+
+规划类回答先输出路由，再给计划：
+
+```text
+CTO路由: <主路由 | 命中场景 | 决策层>
+当前阶段: <P POC/Spike | 0 想法 | 1 需求澄清 | 2 Spec | 3 架构 | 4 脚手架 | 5 Feature 规划 | 6 实现 | 7 验证 | 8 PR/发布 | 9 维护 | I 接手盘点>
+项目形态: <Web+Backend | Desktop+Local Agent | Python Agent/CLI | Library/SDK | Full-stack Monorepo | Unknown>（如有场景，追加：场景 <RPA/OCR/LLM/...>）
+缺失内容:
+下一步 3 个动作:
+要创建/更新的文件:
+验证门禁:
+停止条件:
+```
+
+执行类回答不强制完整模板，但收尾必须包含：变更文件 / 已运行验证 / 未运行检查及原因 / 剩余风险。
 
 ## Skill 内容
 
 - Skill 目录：`software-dev-workflow/`
 - 入口：`software-dev-workflow/SKILL.md`
 - References：
+  - `references/cto-scenario-map.md` —— CTO 分身入口地图：按生命周期、项目形态、业务场景、决策层做知识路由
   - `references/stage-playbook.md` —— Stage P 与 Stage 0–9 阶段判断与下一步动作（Stage I「接手盘点」单独成文）
   - `references/execution-pipeline.md` —— Stage 5–8 的硬 gate、checkout/worktree 策略、implementation plan 质量标准、角色化 review pipeline、后端优先验证、browser QA 触发边界与 learn 边界
   - `references/agent-operating-standards.md` —— agent 执行纪律：Skill 编写结构、common rationalizations、red flags、source-driven gate、change size rules、lifecycle prompt aliases
@@ -33,6 +81,8 @@
 
 ## 主要能力
 
+- 先判断 CTO 路由，再读取对应 reference，不把所有知识域一次性倾倒给用户
+- 按"生命周期 / 项目形态 / 业务场景 / 决策层"四轴分流
 - 按"新项目 vs 接手项目"分流入口
 - 按业务自动化场景补充路由：RPA/采集、OCR/文档智能、视觉质检、数据治理、LLM 生产链路、浏览器自动化、POC/spike
 - spec-driven 开发：业务需求由用户提供，agent 不编造
@@ -44,7 +94,22 @@
 - AI agent 跨会话上下文（Memory Bank）+ 可复用动作模板（Prompts）
 - 接手项目专用盘点流程（含自动识别），默认尊重现状；支持 legacy / pre-vibecoding 文档迁移
 - 代码审查口径：优先检查《重构》坏味道、潜在行为风险与测试重点、secret / hardcode 风险，并保留真人验收为业务真源
-- 7 字段「下一步」统一输出格式
+- CTO 路由模板统一规划类输出格式
+
+## v0.8.0 新增（CTO 分身定位 + 使用场景地图）
+
+- 新增 `references/cto-scenario-map.md`，把 Skill 从“软件开发工作流集合”重定位为“CTO 分身”：先路由，再读取知识。
+- `SKILL.md` description 改为 CTO 分身型中文软件研发决策 Skill，入口标题改为 `CTO Copilot / 软件研发 CTO 分身`。
+- 规划类输出从原 7 字段升级为 CTO 路由模板，新增 `CTO路由: <主路由 | 命中场景 | 决策层>`。
+- README 改为可传播的对外说明：先讲定位、适用场景、场景地图和使用方式，再列 references。
+- `agents/openai.yaml` 同步对外显示名为 `CTO 分身`，默认 prompt 要求先判断场景路由。
+- 对外推荐 repo name：`cto-copilot-skill`；兼容 Skill ID 仍保留 `software-dev-workflow`，避免破坏已有安装和触发路径。
+
+### 版本号
+
+- `SKILL.md` `0.7.0` → `0.8.0`
+- `agents/openai.yaml` 同步 `0.8.0`
+- `README.md` Version `0.8.0`
 
 ## v0.7.0 新增（Agent 执行纪律 + Source-driven Gate）
 
@@ -181,7 +246,7 @@ cp -R software-dev-workflow ~/.codex/skills/
 $software-dev-workflow
 ```
 
-或在对话中明确请求："使用 software-dev-workflow 评估我的项目阶段，告诉我下一步具体该做什么。"
+或在对话中明确请求："使用 software-dev-workflow 作为 CTO 分身，先判断场景路由，再告诉我下一步具体该做什么。"
 
 ## 适用场景
 
@@ -189,4 +254,5 @@ $software-dev-workflow
 - 接手已有项目（盘点 + 路径选择）
 - 已有项目加 feature
 - review、救火、"下一步做什么"
+- RPA / OCR / CV / LLM / 数据分析等业务技术选型
 - 写开发流程 / 项目规范 / 方法论
